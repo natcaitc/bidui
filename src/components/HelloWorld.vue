@@ -12,82 +12,30 @@
         <h1 class="text-h2 font-weight-bold">Vuetify</h1>
       </div>
 
-      <v-row>
-        <v-col cols="12">
-          <v-card
-            class="py-4"
-            color="surface-variant"
-            image="https://cdn.vuetifyjs.com/docs/images/one/create/feature.png"
-            prepend-icon="mdi:mdi-rocket-launch-outline"
-            rounded="lg"
-            variant="tonal"
-          >
-            <template #image>
-              <v-img position="top right" />
-            </template>
-
-            <template #title>
-              <h2 class="text-h5 font-weight-bold">
-                Get started
-                hi
-                <v-icon icon="mdi:mdi-github" />
-                <!--                <font-awesome-icon :icon="['fas', 'user-secret']" />-->
-              </h2>
-            </template>
-
-            <template #subtitle>
-              <div class="text-subtitle-1">
-                Change this page by updating <v-kbd>{{ `<HelloWorld />` }}</v-kbd> in <v-kbd>components/HelloWorld.vue</v-kbd>.
-              </div>
-            </template>
-          </v-card>
-        </v-col>
-
-        <v-col v-for="link in links" :key="link.href" cols="6">
-          <v-card
-            append-icon="mdi:mdi-open-in-new"
-            class="py-4"
-            color="surface-variant"
-            :href="link.href"
-            :prepend-icon="link.icon"
-            rel="noopener noreferrer"
-            rounded="lg"
-            :subtitle="link.subtitle"
-            target="_blank"
-            :title="link.title"
-            variant="tonal"
-          />
-        </v-col>
-      </v-row>
     </div>
   </v-container>
 </template>
 
 <script setup>
-  const links = [
-    {
-      href: 'https://vuetifyjs.com/',
-      icon: 'mdi:mdi-text-box-outline',
-      subtitle: 'Learn about all things Vuetify in our documentation.',
-      title: 'Documentation',
-    },
-    {
-      href: 'https://vuetifyjs.com/introduction/why-vuetify/#feature-guides',
-      icon: 'mdi:mdi-star-circle-outline',
-      subtitle: 'Explore available framework Features.',
-      title: 'Features',
-    },
-    {
-      href: 'https://vuetifyjs.com/components/all',
-      icon: 'mdi:mdi-widgets-outline',
-      subtitle: 'Discover components in the API Explorer.',
-      title: 'Components',
-    },
-    {
-      href: 'https://discord.vuetifyjs.com',
-      icon: 'mdi:mdi-account-group-outline',
-      subtitle: 'Connect with Vuetify developers.',
-      title: 'Community',
-    },
-  ]
+  import { ref } from 'vue';
+  import { facilities } from '@/stores/facilities.js';
+  const store = facilities();
+  const facilityId = store.facilityId;
+  const data = ref();
+  import { AreaRepository, AuthRepository } from '@/api'
+  const authRepo = new AuthRepository();
+  authRepo.getScope(17,'dab').then(r => {
+    data.value = r.data;
+  })
+
+  const areaRepo = new AreaRepository(facilityId);
+  console.log('hi')
+
+  console.log(facilityId);
+  const test = areaRepo.fetchAreas('dab').then(response => {
+    data.value = response.data;
+  })
+    .catch(error => console.error('API Error:', error));
+
+  console.log('bye')
 </script>

@@ -6,22 +6,40 @@
 
 // Composables
 import { createRouter, createWebHistory } from 'vue-router/auto'
+
+import HomeLayout from '@/layouts/HomeLayout.vue';
+import Home from '@/views/Home.vue';
+
 // import { setupLayouts } from 'virtual:generated-layouts'
 // import { routes } from 'vue-router/auto-routes'
+
+
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import HelloWorld from '@/components/HelloWorld.vue'
+
 import LogoCRUD from '@/components/LogoCRUD.vue'
 import UploadLogo from '@/components/UploadLogo.vue'
 
 // Create routes
 const routes = [
   { path: '/',
-    component: DefaultLayout,
+    component: HomeLayout,
     children: [
       {
         path: '',
         name: 'home',
-        component: HelloWorld,
+        component: Home,
+      },
+    ],
+  },
+  {
+    path: '/:facility',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'Facility Home',
+        components: { default: HelloWorld },
       },
     ],
   },

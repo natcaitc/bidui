@@ -14,9 +14,10 @@ import { fileURLToPath, URL } from 'node:url'
 
 // Visualizer - DEV
 import { visualizer } from 'rollup-plugin-visualizer';
+import fs from "fs";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({mode}) => ({
   plugins: [
     visualizer({ open: true, filename: 'bundle-analysis.html' }), // This creates an HTML file with the bundle analysis
     VueRouter(),
@@ -79,7 +80,18 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    port: 3001,
+    https: {
+      key: fs.readFileSync('./bidatc.test+4-key.pem'),
+      cert: fs.readFileSync('./bidatc.test+4.pem'),
+    },
+    proxy: mode === 'development' ? {
+      '/api': {
+        target: 'https://bidatc.test',
+        changeOrigin: true,
+        secure: true
+      }
+    } : {}
   },
   css: {
     preprocessorOptions: {
@@ -91,4 +103,4 @@ export default defineConfig({
       },
     },
   },
-})
+}));
