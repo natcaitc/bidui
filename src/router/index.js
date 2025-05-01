@@ -14,12 +14,6 @@ import Home from '@/views/Home.vue';
 // import { routes } from 'vue-router/auto-routes'
 
 
-import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import HelloWorld from '@/components/HelloWorld.vue'
-
-import LogoCRUD from '@/components/LogoCRUD.vue'
-import UploadLogo from '@/components/UploadLogo.vue'
-import AdminLayout from '@/layouts/AdminLayout.vue';
 import FacilityHome from '@/views/FacilityHome.vue';
 
 // Create routes
@@ -36,7 +30,7 @@ const routes = [
   },
   {
     path: '/:facility',
-    component: AdminLayout,
+    component: () => import('@/layouts/AdminLayout.vue'),
     children: [
       {
         path: '',
@@ -46,12 +40,12 @@ const routes = [
     ],
   },
   { path: '/logos',
-    component: DefaultLayout,
+    component: () => import('@/layouts/DefaultLayout.vue'),
     children: [
       {
         path: '',
         name: 'logos',
-        component: LogoCRUD,
+        component: () => import('@/components/LogoCRUD.vue'),
       },
       {
         path: 'upload',
@@ -59,7 +53,7 @@ const routes = [
           {
             path: '',
             name: 'upload',
-            component: UploadLogo,
+            component: () => import('@/components/UploadLogo.vue'),
           },
         ],
       },

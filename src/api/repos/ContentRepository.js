@@ -7,16 +7,16 @@ class ContentRepository {
     this.client.setBaseURL(facilityId);
   }
   get () {
-    return this.client.get('/content')
+    return this.client.get('/contents')
   }
   create (data) {
-    return this.client.post('/content/', data)
+    return this.client.post('/contents/', data)
   }
   update (id, data) {
-    return this.client.put(`/content/${id}`, data)
+    return this.client.put(`/contents/${id}`, data)
   }
   delete (id) {
-    return this.client.delete(`/content/${id}`)
+    return this.client.delete(`/contents/${id}`)
   }
 }
 export default ContentRepository;

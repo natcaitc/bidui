@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
+  /*import { ref } from 'vue';
   import { facilities } from '@/stores/facilities.js';
   const store = facilities();
   const facilityId = store.facilityId;
@@ -37,5 +37,5 @@
   })
     .catch(error => console.error('API Error:', error));
 
-  console.log('bye')
+  console.log('bye')*/
 </script>
