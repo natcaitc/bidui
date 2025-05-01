@@ -3,28 +3,13 @@
   import RichTextEditor from '@/composables/RichTextEditor.vue'
   import { ContentRepository } from '@/api/index.js';
   import { useToastStore } from '@/stores/toasts';
-  import { useFacilitiesStore } from '@/stores/facilities.js'
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
 
+  // const route = useRoute();
   const toast = useToastStore();
-  const facility = useFacilitiesStore();
-  const CONTENT = new ContentRepository(facility.facilityId)
+  // const facilityStore = useFacilitiesStore();
+  const CONTENT = new ContentRepository('dab');//facilityStore.getId)
   const content = ref('')
-
-  // Fetch facility content
-  CONTENT.get()
-    .then(r => {
-      console.log(r)
-      content.value = r.data
-    })
-    .catch(e => {
-      console.log(e)
-      toast.showMessage({
-        title: 'Server Error',
-        message: getErrorMessage(e),
-        color: 'error',
-      })
-    })
 
   function updateContent (data) {
     CONTENT.update(content.value.id, { content: data })

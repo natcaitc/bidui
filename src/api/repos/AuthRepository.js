@@ -4,7 +4,6 @@ import apiClient from '@/api/client.js';
 class AuthRepository {
   constructor () {
     this.client = apiClient;
-    this.client.setBaseURL('users')
   }
 
   getUser (userId = null, withMember = false) {

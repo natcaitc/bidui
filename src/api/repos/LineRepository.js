@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class LineRepository {
-  constructor (facilityId, areaSlug) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(`${facilityId}/${areaSlug}`);
   }
   get (groupId = null) {
     const path = '/lines' + (groupId ? `/${groupId}` : '');

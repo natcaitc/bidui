@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class AreaRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
   fetchAreas () {
     return this.client.get('/areas');

@@ -79,7 +79,7 @@ class ApiClient {
     });
   }
 
-  // Set the facilityId if context defined - validate before setting!
+  // Set baseURL
   setBaseURL (path) {
     this.client.defaults.baseURL = `${this.baseURL}/${path}`;
   }

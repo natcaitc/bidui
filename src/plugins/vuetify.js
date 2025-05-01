@@ -24,6 +24,12 @@ config.styleDefault = 'solid'
 const customTheme = {
   dark: false,
   colors: {
+    primary: '#1976D2',
+    secondary: '#424242',
+    success: '#4CAF50',
+    info: '#2196F3',
+    warning: '#FB8C00',
+    error: '#FF5252',
     background: '#F8F8FA',
     surface: '#ffffff',
   },
@@ -83,12 +89,7 @@ export default createVuetify({
   ,
   theme: {
     defaultTheme: 'customTheme',
-    themes
-    :
-  {
-    customTheme,
-  }
-    ,
+    themes: { customTheme },
   }
   ,
 })

@@ -13,7 +13,7 @@ import Home from '@/views/Home.vue';
 // import { setupLayouts } from 'virtual:generated-layouts'
 // import { routes } from 'vue-router/auto-routes'
 
-
+import { useFacilitiesStore } from '@/stores/facilities.js';
 import FacilityHome from '@/views/FacilityHome.vue';
 
 // Create routes
@@ -31,11 +31,39 @@ const routes = [
   {
     path: '/:facility',
     component: () => import('@/layouts/AdminLayout.vue'),
+    beforeEnter: async (to, from, next) => {
+      try {
+        // Get the facility ID from the route parameter
+        const facilityId = to.params.facility;
+
+        // Access the facilities store
+        const facilitiesStore = useFacilitiesStore();
+
+        // Check if we already have this facility loaded
+        if (!facilitiesStore.facility || facilitiesStore.facility.id !== facilityId) {
+          // Load the facility data
+          await facilitiesStore.loadFacility(facilityId);
+        }
+
+        // Continue to the route
+        next();
+      } catch (error) {
+        console.error('Failed to load facility data:', error);
+
+        // Redirect to home page or error page if loading fails
+        next({ name: 'home' });
+      }
+    },
     children: [
       {
         path: '',
         name: 'facility.home',
         components: { default: FacilityHome },
+      },
+      {
+        path: 'config',
+        name: 'facility.config',
+        components: { default: () => import('@/views/FacilityConfigure.vue') },
       },
     ],
   },

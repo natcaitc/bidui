@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class LineGroupRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
   get (bidYear, withInactive = false) {
     return this.client.post('/linegroups', { bid_year: bidYear, withInactive })

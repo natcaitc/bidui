@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class RosterRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
 
   get (id = null, bidYear = null) {

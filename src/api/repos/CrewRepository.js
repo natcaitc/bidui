@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class CrewRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
   get () {
     return this.client.get('/crews')

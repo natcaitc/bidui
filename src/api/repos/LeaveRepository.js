@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class LeaveRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
   getCalendar (bidYear = null, start = null, end = null) {
     return this.client.get('/leave/calendar', { bid_year: bidYear, start, end })

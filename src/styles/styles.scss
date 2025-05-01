@@ -1,9 +1,21 @@
+@use 'vuetify/settings' with ( $color-pack: true);
+
 .v-table > .v-table__wrapper > table > thead > tr > th {
   background-color: #EBEBEB;
   color: #5A626B;
   font-weight: bold;
 }
 
+/** sidebar */
 .mynatca-sidebar-bg {
   background-color: #323547;
+}
+
+/** v-dialog */
+.v-overlay-container .v-card {
+  background-color: #edf2f4;
+}
+.v-overlay-container .v-card .v-card-title {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: white;
 }

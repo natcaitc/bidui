@@ -52,6 +52,7 @@
           link
           prepend-icon="gear"
           title="CONFIGURATION"
+          :to="{name: 'facility.config'}"
         />
       </v-list>
     </v-navigation-drawer>
@@ -96,6 +97,12 @@
 <script setup>
   import AppFooter from '@/layouts/Footer.vue'
   import { ref } from 'vue'
+  import { useToastStore } from '@/stores/toasts';
+  import { useFacilitiesStore } from '@/stores/facilities.js'
+  import { getErrorMessage } from '@/utils/getErrorMessage.js';
+
+  const toast = useToastStore();
+  const facility = useFacilitiesStore();
 
   const drawer = ref(true)
   const rail = ref(true)

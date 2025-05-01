@@ -2,9 +2,8 @@
 import apiClient from '@/api/client.js';
 
 class RoundRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.client.setBaseURL(facilityId);
   }
   get (bidYear) {
     return this.client.get('/rounds', { bid_year: bidYear })
