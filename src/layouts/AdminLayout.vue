@@ -99,7 +99,6 @@
   import { ref } from 'vue'
   import { useToastStore } from '@/stores/toasts';
   import { useFacilitiesStore } from '@/stores/facilities.js'
-  import { getErrorMessage } from '@/utils/getErrorMessage.js';
 
   const toast = useToastStore();
   const facility = useFacilitiesStore();

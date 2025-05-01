@@ -30,7 +30,7 @@
                     density="comfortable"
                     :item-title="id => days.find(x => x.id === id).name"
                     item-value="id"
-                    :items="filteredDays.map(day => day.id)"
+                    :items="filteredDays.map(() => day.id)"
                     label="Select Days of Week"
                     multiple
                     variant="outlined"

@@ -78,12 +78,8 @@
               </template>
               <span>
                 Mode for testing the site and different configurations. In test mode...
-                <ul class="pa-0 ma-0">
-                  <li>
-                    Notifications will not be sent to controllers, notifications that would be sent
-                    can be viewed in the Message screen
-                  </li>
-                </ul>
+                Notifications will not be sent to controllers, notifications that would be sent
+                can be viewed in the Message screen
               </span>
             </v-tooltip>
           </div>
@@ -135,7 +131,7 @@
 </template>
 
 <script setup>
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref } from 'vue'
   import ManageBidYear from '@/views/FacilityComponents/ManageBidYear.vue';
 
   const props = defineProps({
@@ -175,53 +171,53 @@
   //   allow_text: 0,
   //   privacy: 0,
   // })
-
-  // Days of week data
-  const days = [
-    { id: 0, name: 'Sunday' },
-    { id: 1, name: 'Monday' },
-    { id: 2, name: 'Tuesday' },
-    { id: 3, name: 'Wednesday' },
-    { id: 4, name: 'Thursday' },
-    { id: 5, name: 'Friday' },
-    { id: 6, name: 'Saturday' },
-  ]
+  //
+  // // Days of week data
+  // const days = [
+  //   { id: 0, name: 'Sunday' },
+  //   { id: 1, name: 'Monday' },
+  //   { id: 2, name: 'Tuesday' },
+  //   { id: 3, name: 'Wednesday' },
+  //   { id: 4, name: 'Thursday' },
+  //   { id: 5, name: 'Friday' },
+  //   { id: 6, name: 'Saturday' },
+  // ]
 
   // Timezones - replace with your actual list of timezones
-  const timezones = [
-    'America/New_York',
-    'America/Chicago',
-    'America/Denver',
-    'America/Los_Angeles',
-    'America/Anchorage',
-    'America/Honolulu',
-  ]
+  // const timezones = [
+  //   'America/New_York',
+  //   'America/Chicago',
+  //   'America/Denver',
+  //   'America/Los_Angeles',
+  //   'America/Anchorage',
+  //   'America/Honolulu',
+  // ]
 
   // Helper function to check user role
-  const is = role => {
-    // Replace with your actual role checking logic
-    return true
-  }
+  // const is = role => {
+  //   // Replace with your actual role checking logic
+  //   return true
+  // }
+  //
+  // // Selected days across all bid hour configurations
+  // const selectedDays = computed(() => {
+  //   const allDays = []
+  //   localFacility.value.bid_days.forEach(day => {
+  //     allDays.push(...day.days)
+  //   })
+  //   return [...new Set(allDays)]
+  // })
+  //
+  // // Filtered days that are not yet selected
+  // const filteredDays = computed(() => {
+  //   return days
+  // })
 
-  // Selected days across all bid hour configurations
-  const selectedDays = computed(() => {
-    const allDays = []
-    localFacility.value.bid_days.forEach(day => {
-      allDays.push(...day.days)
-    })
-    return [...new Set(allDays)]
-  })
-
-  // Filtered days that are not yet selected
-  const filteredDays = computed(() => {
-    return days
-  })
-
-  // Alias for bid_days for better readability
-  const bidHours = computed(() => localFacility.value.bid_days)
-
-  // Facility timezone getter
-  const facilityTimezone = computed(() => {
-    return localFacility.value.timezone || 'No timezone selected'
-  })
+  // // Alias for bid_days for better readability
+  // const bidHours = computed(() => localFacility.value.bid_days)
+  //
+  // // Facility timezone getter
+  // const facilityTimezone = computed(() => {
+  //   return localFacility.value.timezone || 'No timezone selected'
+  // })
 </script>

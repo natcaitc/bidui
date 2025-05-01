@@ -64,10 +64,10 @@
   const facilitiesStore = useFacilitiesStore()
 
   // Computed properties
-  const canChange = computed(() => {
-    const currentYear = new Date().getFullYear()
-    return props.isSuper || props.facility.bid_year === currentYear
-  })
+  // const canChange = computed(() => {
+  //   const currentYear = new Date().getFullYear()
+  //   return props.isSuper || props.facility.bid_year === currentYear
+  // })
 
   const year = computed(() => {
     return dirty.value ? new_year.value : Number(new_year.value) + 1

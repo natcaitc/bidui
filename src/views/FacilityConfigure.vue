@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-  import { onMounted, ref } from 'vue'
+  import { ref } from 'vue'
   import { storeToRefs } from 'pinia';
   import { useFacilitiesStore } from '@/stores/facilities.js';
   import { FacilityRepository } from '@/api/';
@@ -78,8 +78,8 @@
         message: 'Facility details saved successfully.',
         color: 'success',
       })
-    } catch (error) {
-      console.error('Error saving facility details:', error);
+    } catch (e) {
+      console.error('Error saving facility details:', e);
       toast.showMessage({
         title: 'Server Error',
         message: getErrorMessage(e),

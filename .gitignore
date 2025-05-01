@@ -25,3 +25,4 @@ pnpm-debug.log*
 bidatc.test+4-key.pem
 bidatc.test+4.pem
 bundle-analysis.html
+_dev-scripts.cjs
