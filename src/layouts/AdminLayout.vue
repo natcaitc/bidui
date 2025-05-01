@@ -97,7 +97,6 @@
   import AppFooter from '@/layouts/Footer.vue'
   import { ref } from 'vue'
 
-  const open = ref([])
   const drawer = ref(true)
   const rail = ref(true)
 </script>

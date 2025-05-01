@@ -24,3 +24,4 @@ pnpm-debug.log*
 .env.development
 bidatc.test+4-key.pem
 bidatc.test+4.pem
+bundle-analysis.html

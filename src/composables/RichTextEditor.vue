@@ -27,8 +27,8 @@
     <v-toolbar v-if="isEditing" class="mb-2" density="compact" style="gap: 4px; max-width: 100%;">
       <!-- Text Styles Menu -->
       <v-menu>
-        <template #activator="{ props }">
-          <v-btn density="compact" variant="text" v-bind="props">
+        <template #activator="{ props: activatorProps }">
+          <v-btn density="compact" variant="text" v-bind="activatorProps">
             <font-awesome-icon
               v-if="editor.isActive('heading', { level: 1 })"
               :icon="['fass', 'h1']"
@@ -215,6 +215,7 @@
     overflow-y: auto;
 }
 
+/* noinspection CssUnusedSymbol */
 :deep(.ProseMirror) {
     flex: 1 1 auto;
     min-height: 100%;
