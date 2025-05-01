@@ -19,6 +19,8 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 import LogoCRUD from '@/components/LogoCRUD.vue'
 import UploadLogo from '@/components/UploadLogo.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue';
+import FacilityHome from '@/views/FacilityHome.vue';
 
 // Create routes
 const routes = [
@@ -34,12 +36,12 @@ const routes = [
   },
   {
     path: '/:facility',
-    component: DefaultLayout,
+    component: AdminLayout,
     children: [
       {
         path: '',
-        name: 'Facility Home',
-        components: { default: HelloWorld },
+        name: 'facility.home',
+        components: { default: FacilityHome },
       },
     ],
   },

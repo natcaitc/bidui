@@ -60,7 +60,7 @@
       .then(r => {
         console.log(r)
         if (r.data.id === facilityId.value)
-          router.push({ name: 'logos' })
+          router.push({ name: 'facility.home', params: { facility: facilityId.value } })
         else
           toast.showMessage({
             title: 'Input Error',
