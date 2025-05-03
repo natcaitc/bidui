@@ -94,6 +94,7 @@
     return JSON.stringify(normalized);
   }
 
+  /* Watchers */
   // Watch for changes to facility prop
   watch(() => props.facility, newFacility => {
     if (newFacility) {
@@ -104,34 +105,4 @@
       originalFacility.value = JSON.stringify(newFacility)
     }
   }, { immediate: true, deep: true })
-
-  // // Function to save area changes
-  // async function saveAreaChanges () {
-  //   try {
-  //     console.log('FacilityTabBase: saveAreaChanges called');
-  //
-  //     // Find modified areas by comparing with original
-  //     const originalAreasArray = JSON.parse(originalAreas.value || '[]')
-  //
-  //     for (const area of localAreas.value) {
-  //       const originalArea = originalAreasArray.find(a => a.id === area.id)
-  //       if (JSON.stringify(area) !== JSON.stringify(originalArea)) {
-  //         // This area was modified, save it
-  //         console.log('FacilityTabBase: updating area', area.id);
-  //         await AREA.updateArea(area.id, area)
-  //       }
-  //     }
-  //
-  //     // Update original reference
-  //     originalAreas.value = JSON.stringify(localAreas.value);
-  //
-  //     // Emit event to refresh data - using JSON.parse/stringify to ensure clean object
-  //     console.log('FacilityTabBase: emitting area-update event');
-  //     const cleanAreasArray = JSON.parse(JSON.stringify(localAreas.value));
-  //     emit('area-update', cleanAreasArray)
-  //   } catch (error) {
-  //     console.error('Error saving area changes:', error)
-  //     throw error
-  //   }
-  // }
 </script>

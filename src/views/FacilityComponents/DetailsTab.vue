@@ -1,14 +1,14 @@
 <template>
   <FacilityTabBase :facility="facility" @save="handleSave">
-    <template #default="{ facility: _facility, hasChanges, prepareChanges }">
+    <template #default="slotProps">
       <v-card flat>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Facility Details</span>
           <v-btn
             color="primary"
-            :disabled="!hasChanges"
+            :disabled="!slotProps['has-changes']"
             prepend-icon="floppy-disk"
-            @click="prepareChanges"
+            @click="slotProps['prepare-changes']"
           >
             Save Changes
           </v-btn>
@@ -17,7 +17,7 @@
           <v-row>
             <v-col cols="12" md="4">
               <v-text-field
-                v-model="_facility.name"
+                v-model="slotProps.facility.name"
                 density="comfortable"
                 :disabled="!is('super')"
                 label="Name"
@@ -26,7 +26,7 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-text-field
-                v-model="_facility.id"
+                v-model="slotProps.facility.id"
                 density="comfortable"
                 :disabled="!is('super')"
                 label="Facility ID"
@@ -37,7 +37,7 @@
 
             <v-col cols="12" md="4">
               <v-text-field
-                v-model="_facility.bid_year"
+                v-model="slotProps.facility.bid_year"
                 density="comfortable"
                 :disabled="!is('super')"
                 label="Bid Year"
@@ -50,15 +50,15 @@
           <v-divider class="mt-3 mb-6" />
           <v-row>
             <v-col>
-              <p class="mb-2">The bid year for <strong class="text-uppercase">{{ facility.id }}</strong> is set to
-                <strong>{{ _facility.bid_year }}</strong>.
+              <p class="mb-2">The bid year for <strong class="text-uppercase">{{ slotProps.facility.id }}</strong> is set to
+                <strong>{{ slotProps.facility.bid_year }}</strong>.
                 If you are ready to bid to configure the site for next year, click the button to the right.</p>
               <p class="font-italic font-weight-light">The system runs several processes in the background once this button is clicked. Wait a few minutes after clicking the button,
                 then reload the page.</p>
             </v-col>
             <v-col class="d-flex align-center text-center">
               <manage-bid-year
-                v-if="_facility.id"
+                v-if="slotProps.facility.id"
                 :facility="facility"
                 :is-super="is('super')"
               />
@@ -69,7 +69,7 @@
             <v-col cols="12" md="4">
               <div class="d-flex align-center">
                 <v-switch
-                  v-model="_facility.test_mode"
+                  v-model="slotProps.facility.test_mode"
                   color="primary"
                   :false-value="0"
                   hide-details
@@ -91,7 +91,7 @@
             <v-col cols="12" md="4">
               <div class="d-flex align-center">
                 <v-switch
-                  v-model="_facility.allow_text"
+                  v-model="slotProps.facility.allow_text"
                   color="primary"
                   :false-value="0"
                   hide-details
@@ -112,7 +112,7 @@
             <v-col cols="12" md="4">
               <div class="d-flex align-center">
                 <v-switch
-                  v-model="_facility.hide_all_content"
+                  v-model="slotProps.facility.hide_all_content"
                   color="primary"
                   :false-value="0"
                   hide-details
@@ -137,9 +137,11 @@
 </template>
 
 <script setup>
+/* Imports */
   import ManageBidYear from '@/views/FacilityComponents/ManageBidYear.vue';
   import FacilityTabBase from '@/views/FacilityComponents/FacilityTabBase.vue';
 
+  /* Setup */
   const props = defineProps({
     facility: {
       type: Object,
@@ -150,21 +152,21 @@
       default: null,
     },
   });
-
   const emit = defineEmits(['save']);
 
+  /* Data */
+  // Helper function to check user role
+  const is = () => {
+    // Replace with your actual role checking logic
+    return true;
+  };
+
+  /* Methods */
   function handleSave (_facility) {
-    console.log('DetailsTab handleSave called with:', _facility);
     if (props.saveHandler) {
       props.saveHandler(_facility);
     } else {
       emit('save', _facility);
     }
   }
-
-  // Helper function to check user role
-  const is = role => {
-    // Replace with your actual role checking logic
-    return true;
-  };
 </script>

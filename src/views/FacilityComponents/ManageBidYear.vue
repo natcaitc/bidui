@@ -36,11 +36,15 @@
 </template>
 
 <script setup>
+  /* Imports */
+  /** @typedef {import('@/types').Facility} Facility */
   import { computed, onMounted, ref, watch } from 'vue'
   import { FacilityRepository } from '@/api'
   import { useFacilityStore } from '@/stores/facility.js'
 
+  /* Setup */
   const props = defineProps({
+    /** @type {Facility} */
     facility: {
       type: Object,
       required: true,
@@ -54,36 +58,35 @@
       default: false,
     },
   })
-
   const emit = defineEmits(['update:facility', 'year'])
 
+  /* Data */
   const new_year = ref(0)
   const dirty = ref(false)
   const dialogVisible = ref(false)
   const facilityRepo = new FacilityRepository()
-  const facilitiesStore = useFacilityStore()
-
+  const facilityStore = useFacilityStore()
   // Computed properties
   // const canChange = computed(() => {
   //   const currentYear = new Date().getFullYear()
   //   return props.isSuper || props.facility.bid_year === currentYear
   // })
 
+  /* Computed */
   const year = computed(() => {
     return dirty.value ? new_year.value : Number(new_year.value) + 1
   })
 
-  // Methods
+  /* Methods */
   function confirmNewYear () {
     dialogVisible.value = true
   }
-
   async function newYear () {
     try {
       const response = await facilityRepo.update(props.facility.id, { bid_year: year.value })
 
       // Update store and emit events for parent components
-      facilitiesStore.updateFacility(response.data)
+      await facilityStore.updateFacility(response.data)
       emit('update:facility', response.data)
       emit('year', year.value)
 
@@ -95,12 +98,12 @@
     }
   }
 
-  // Initialize component
+  /* Lifecycle */
   onMounted(() => {
     new_year.value = props.facility.bid_year
   })
 
-  // Watch for changes to the input
+  /* Watchers */
   watch(new_year, newValue => {
     // If user changes the value, mark as dirty
     if (parseInt(newValue) !== props.facility.bid_year) {

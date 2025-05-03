@@ -13,7 +13,7 @@
         <template #item.name="{ item }">
           {{ item.name }} <span class="text-caption text-medium-emphasis">({{ item.slug }})</span>
         </template>
-        <template #item.slack_webhook="{ item, index }">
+        <template #item.slack_webhook="{ item }">
           <v-icon
             class="cursor-pointer"
             :color="item.slack_webhook ? 'primary' : 'grey'"
@@ -21,7 +21,7 @@
             @click="openDialog('slack', item)"
           />
         </template>
-        <template #item.discord_channel_id="{ item, index }">
+        <template #item.discord_channel_id="{ item }">
           <v-icon
             class="cursor-pointer"
             :color="item.discord_channel_id ? 'primary' : 'grey'"
@@ -33,7 +33,7 @@
     </v-card-text>
   </v-card>
 
-  <v-dialog v-model="slackDialog" max-width="500">
+  <v-dialog v-model="displaySlackDialog" max-width="500">
     <v-card>
       <v-card-title>Slack Configuration</v-card-title>
       <v-card-text>
@@ -50,7 +50,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="slackDialog = false">Cancel</v-btn>
+        <v-btn text @click="displaySlackDialog = false">Cancel</v-btn>
         <v-btn
           color="primary"
           variant="elevated"
@@ -62,7 +62,7 @@
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="discordDialog" max-width="500">
+  <v-dialog v-model="displayDiscordDialog" max-width="500">
     <v-card>
       <v-card-title>Discord Configuration</v-card-title>
       <v-card-text>
@@ -74,7 +74,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="discordDialog = false">Cancel</v-btn>
+        <v-btn text @click="displayDiscordDialog = false">Cancel</v-btn>
         <v-btn
           color="primary"
           variant="elevated"
@@ -88,9 +88,11 @@
 </template>
 
 <script setup>
+  /* Imports */
+  /** @typedef {import('@/types')} Area */
   import { ref, watch } from 'vue';
-  import { getErrorMessage } from '@/utils/getErrorMessage.js';
 
+  /* Setup */
   const props = defineProps({
     areas: {
       type: Array,
@@ -102,41 +104,44 @@
     },
   });
   const emit = defineEmits(['save', 'area-update']);
-  const _areas = ref([]);
-  const _area = ref({});
+
+  /* Data */
+  const _areas = ref([]); // Local copy of areas list
+  /** @type {ref<Area>} */
+  const _area = ref({}); // Local copy of area being edited
   const headers = [
     { title: 'Area Name', value: 'name' },
     { title: 'Slack', value: 'slack_webhook', align: 'center' },
     { title: 'Discord', value: 'discord_channel_id', align: 'center' },
-  ];
+  ]; // Table headers
+  const displaySlackDialog = ref(false);
+  const displayDiscordDialog = ref(false);
 
-  const selectedArea = ref(null);
-  const selectedAreaIndex = ref(-1);
-  const slackDialog = ref(false);
-  const discordDialog = ref(false);
-  const currentUpdateAreaFn = ref(null);
-  const saving = ref(false);
-
+  /* Methods */
+  // Open the dialog for the given brand and clone a local copy of the  area for editing
   function openDialog (brand, area) {
     _area.value = JSON.parse(JSON.stringify(area));
     if (brand === 'slack') {
-      slackDialog.value = true;
+      displaySlackDialog.value = true;
     } else if (brand === 'discord') {
-      discordDialog.value = true;
+      displayDiscordDialog.value = true;
     }
   }
 
+  // Save the webhook settings for the area being edited
   function saveWebhookSettings () {
     if (props.updateArea) {
       props.updateArea(_area.value);
     } else {
       emit('save', _area.value);
     }
-    slackDialog.value = false;
-    discordDialog.value = false;
+    displaySlackDialog.value = false;
+    displayDiscordDialog.value = false;
     _area.value = {};
   }
 
+  /* Watchers */
+  // Watch for changes to the areas list and update the local copy
   watch(() => props.areas, newAreas => {
     if (newAreas) {
       _areas.value = JSON.parse(JSON.stringify(newAreas))

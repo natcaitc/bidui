@@ -114,22 +114,26 @@
 </template>
 
 <script setup>
+  /* Imports */
   import AppFooter from '@/layouts/Footer.vue'
   import { onMounted, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useDisplay } from 'vuetify'
 
+  /* Setup */
   const route = useRoute();
   const display = useDisplay();
 
-  // Single drawer state
-  const drawer = ref(true);
+  /* Data */
+  const drawer = ref(true); // Single drawer state
 
+  /* Lifecycle */
   // Set initial drawer state based on screen size
   onMounted(() => {
     drawer.value = display.lgAndUp.value;
   });
 
+  /* Watchers */
   // Update drawer when screen size changes
   watch(display.lgAndUp, isLargeScreen => {
     drawer.value = isLargeScreen;
@@ -179,6 +183,7 @@
 }
 
 /* Icon color */
+/* noinspection CssUnusedSymbol */
 .close-btn .v-icon {
   color: rgba(255, 255, 255, 0.9);
   font-size: 18px;

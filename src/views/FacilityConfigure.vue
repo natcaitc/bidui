@@ -47,6 +47,7 @@
 </template>
 
 <script setup>
+/* Imports */
   import { ref } from 'vue'
   import { storeToRefs } from 'pinia';
   import { useFacilityStore } from '@/stores/facility.js';
@@ -59,22 +60,19 @@
   import BidConfigurationsTab from './FacilityComponents/BidConfigurationsTab.vue'
   import AreasTab from './FacilityComponents/AreasTab.vue'
 
-
+  /* Data */
   const toast = useToastStore();
   const facilityStore = useFacilityStore();
   const areaStore = useAreaStore();
   const { facility } = storeToRefs(facilityStore);
   const { areas } = storeToRefs(areaStore);
-
   const tab = ref(0)
 
+  /* Methods */
   // Handle save from tabs for facility changes
   async function updateFacility (data) {
-    console.log('[FacilityConfigure] updateFacility called with:', data);
-
     try {
       if (!data || !data.id) {
-        console.error('[FacilityConfigure] Invalid facility data provided:', data);
         toast.showMessage({
           title: 'Error',
           message: 'Invalid facility data',
@@ -92,7 +90,6 @@
         color: 'success',
       });
     } catch (e) {
-      console.error('[FacilityConfigure] Error saving facility details:', e);
       toast.showMessage({
         title: 'Server Error',
         message: getErrorMessage(e),
@@ -103,11 +100,8 @@
 
   // Handle area updates from tabs
   async function createArea (data) {
-    console.log('FacilityConfigure createArea called with:', data);
-
     try {
       if (!data) {
-        console.error('Invalid area data provided:', data);
         return;
       }
 
@@ -120,7 +114,6 @@
         color: 'success',
       });
     } catch (e) {
-      console.error('Error creating area in store:', e);
       toast.showMessage({
         title: 'Error',
         message: getErrorMessage(e),
@@ -131,11 +124,8 @@
 
   // Handle area updates from tabs
   async function updateArea (data) {
-    console.log('FacilityConfigure updateArea called with:', data);
-
     try {
       if (!data) {
-        console.error('Invalid area data provided:', data);
         return;
       }
 
@@ -148,7 +138,6 @@
         color: 'success',
       });
     } catch (e) {
-      console.error('Error updating area in store:', e);
       toast.showMessage({
         title: 'Error',
         message: getErrorMessage(e),
@@ -159,11 +148,8 @@
 
   // Handle area updates from tabs
   async function deleteArea (data) {
-    console.log('FacilityConfigure deleteArea called with:', data);
-
     try {
       if (!data) {
-        console.error('Invalid area data provided:', data);
         return;
       }
 

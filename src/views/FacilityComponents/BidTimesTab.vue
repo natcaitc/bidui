@@ -1,13 +1,13 @@
 <template>
   <FacilityTabBase :facility="facility" @save="handleSave">
-    <template #default="{ facility: _facility, hasChanges, prepareChanges }">
+    <template #default="slotProps">
       <v-card flat>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Configure Bidding Start & End Times</span>
           <v-btn
             color="primary"
-            :disabled="!hasChanges"
-            @click="prepareChanges"
+            :disabled="!slotProps['hasChanges']"
+            @click="slotProps['prepare-changes']"
           >
             Save Changes
           </v-btn>
@@ -25,7 +25,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="day in _facility.bid_days" :key="day.weekday">
+                  <tr v-for="day in slotProps['facility']?.bid_days" :key="day.weekday">
                     <td>{{ day.weekday }}</td>
                     <td>
                       <v-checkbox
@@ -64,7 +64,7 @@
           <v-row>
             <v-col cols="12" md="4">
               <v-select
-                v-model="_facility.timezone"
+                v-model="slotProps['facility'].timezone"
                 density="comfortable"
                 :items="timezones"
                 label="Facility Timezone"
@@ -79,8 +79,10 @@
 </template>
 
 <script setup>
+  /* Imports */
   import FacilityTabBase from '@/views/FacilityComponents/FacilityTabBase.vue';
 
+  /* Setup */
   const props = defineProps({
     facility: {
       type: Object,
@@ -91,10 +93,9 @@
       default: null,
     },
   });
-
   const emit = defineEmits(['save']);
 
-  // const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  /* Data */
   const timezones = [
     'America/New_York', // Eastern
     'America/Chicago', // Central
@@ -112,19 +113,17 @@
     'America/Detroit', // Eastern variant
   ];
 
+  /* Methods */
   // Handle when a day is marked as closed
   function handleDayClosedChange (day) {
-    console.log('Day closed changed:', day.weekday, 'Closed:', day.closed);
-
     if (day.closed) {
       // Clear the time fields when marked as closed
       day.open = '';
       day.close = '';
     }
   }
-
+  // Handle save of details
   function handleSave (_facility) {
-    console.log('BidTimesTab handleSave called with:', _facility);
     if (props.saveHandler) {
       props.saveHandler(_facility);
     } else {

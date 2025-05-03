@@ -1,16 +1,26 @@
+<template>
+  <v-container class="facility-container fill-height" fluid>
+    <v-row class="fill-height">
+      <v-col class="editor-column d-flex flex-column fill-height" cols="12">
+        <RichTextEditor v-model="content.content" class="flex-grow-1" @save="updateContent" />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
 <script setup>
+  /* Imports */
   import { ref } from 'vue'
   import RichTextEditor from '@/composables/RichTextEditor.vue'
   import { ContentRepository } from '@/api/index.js';
   import { useToastStore } from '@/stores/toasts';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
 
-  // const route = useRoute();
+  /* Data */
   const toast = useToastStore();
-  // const facilityStore = useFacilitiesStore();
   const CONTENT = new ContentRepository('dab');//facilityStore.getId)
   const content = ref('')
 
+  /* Methods */
   function updateContent (data) {
     CONTENT.update(content.value.id, { content: data })
       .then(() => {
@@ -30,16 +40,6 @@
       })
   }
 </script>
-
-<template>
-  <v-container class="facility-container fill-height" fluid>
-    <v-row class="fill-height">
-      <v-col class="editor-column d-flex flex-column fill-height" cols="12">
-        <RichTextEditor v-model="content.content" class="flex-grow-1" @save="updateContent" />
-      </v-col>
-    </v-row>
-  </v-container>
-</template>
 
 <style scoped>
 .facility-container {

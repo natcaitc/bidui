@@ -8,9 +8,9 @@
           color="success"
           @click="createAreaForm"
         >
-          <v-icon v-if="display?.mdAndUp?.value" icon="plus" start />
+          <v-icon v-if="display.mdAndUp.value" icon="plus" start />
           <v-icon v-else icon="plus" />
-          <span v-if="display?.mdAndUp?.value">Add Area</span>
+          <span v-if="display.mdAndUp.value">Add Area</span>
         </v-btn>
       </div>
     </v-card-title>
@@ -86,17 +86,19 @@
 </template>
 
 <script setup>
+/* Imports */
   import { computed, ref, watch } from 'vue';
   import AreaForm from '@/views/FacilityComponents/AreaForm.vue';
   import { useDisplay } from 'vuetify';
   import { useRoute } from 'vue-router';
 
+  /* Setup */
   const route = useRoute();
   const defaultAreaFields = ref({});
   const displayObject = useDisplay();
-  const display = ref({
+  const display = {
     mdAndUp: computed(() => displayObject?.mdAndUp || false),
-  });
+  };
   const props = defineProps({
     areas: {
       type: Array,
@@ -116,35 +118,22 @@
     },
   });
   const emit = defineEmits(['save', 'delete-area']);
+
+  /** Data */
   const headers = [
     { title: 'Area Name', key: 'name' },
     { title: 'Slug', key: 'slug' },
     { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
   ];
-
-  /** Setup */
-  onMounted(() => {
-    console.log('AreasTab onMounted called with:', route.params);
-    defaultAreaFields.value = {
-      facility_id: route.params.facility,
-      name: '',
-      slug: '',
-      tag: '',
-      use_bid_aid: 0,
-      subtract_holiday_leave: 0,
-      grace_hours: '4',
-      accrual_slot_factor: '8',
-    };
-  });
-
-  /** Add/Edit Area */
-  const showFormDialog = ref(null); // Display of the dialog with the form
+  const showFormDialog = ref(false); // Display of the dialog with the form
   const formAction = ref('add'); // Add or Edit an area - add | edit
   const _areas = ref([]);
   const _area = ref({}); // Working copy of area for the form
   const _areaIdx = ref(-1);
+  const showDeleteDialog = ref(false);
+
+  /** Methods */
   function handleSave () {
-    console.log('AreasTab handleSave called with:');
     if (formAction.value === 'add') {
       if (props.createArea) {
         props.createArea(_area.value);
@@ -186,15 +175,11 @@
     showDeleteDialog.value = false;
     formAction.value = 'add';
   }
-
-  /** Delete Area */
-  const showDeleteDialog = ref(false);
   function confirmDeleteArea (area) {
     _area.value = area;
     showDeleteDialog.value = true;
   }
   function deleteAreaConfirmed () {
-    console.log('AreasTab deleteAreaConfirmed called with:', _area.value);
     if (props.deleteArea) {
       props.deleteArea(_area.value);
     } else {
@@ -205,6 +190,21 @@
     resetForm();
   }
 
+  /** Lifecycle */
+  onMounted(() => {
+    defaultAreaFields.value = {
+      facility_id: route.params.facility,
+      name: '',
+      slug: '',
+      tag: '',
+      use_bid_aid: 0,
+      subtract_holiday_leave: 0,
+      grace_hours: '4',
+      accrual_slot_factor: '8',
+    };
+  });
+
+  /** Watchers */
   watch(() => props.areas, newAreas => {
     if (newAreas) {
       _areas.value = JSON.parse(JSON.stringify(newAreas))

@@ -1,14 +1,14 @@
 <template>
   <FacilityTabBase :facility="facility" @save="handleSave">
-    <template #default="{ facility: _facility, hasChanges, prepareChanges }">
+    <template #default="slotProps">
       <v-card flat>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Bid Configurations</span>
           <v-btn
             color="primary"
-            :disabled="!hasChanges"
+            :disabled="!slotProps['has-changes']"
             prepend-icon="floppy-disk"
-            @click="prepareChanges"
+            @click="slotProps['prepare-changes']"
           >
             Save Changes
           </v-btn>
@@ -18,7 +18,7 @@
             <v-col cols="12" md="4">
               <div class="d-flex align-center">
                 <v-switch
-                  v-model="_facility.auto_open_close"
+                  v-model="slotProps.facility.auto_open_close"
                   color="primary"
                   :false-value="0"
                   hide-details
@@ -39,7 +39,7 @@
             <v-col cols="12" md="4">
               <div class="d-flex align-center">
                 <v-text-field
-                  v-model="_facility.bid_lock_time"
+                  v-model="slotProps.facility.bid_lock_time"
                   density="comfortable"
                   :disabled="!is('super')"
                   label="Bid Lock Time"
@@ -53,7 +53,7 @@
                     Amount of time a bidder can prevent others from bidding. Doesn't skip the bidder if the timer runs out, just
                     unlocks the area for bidding once the timer expires. Used for when a bidder closes the browser and doesn't cancel
                     bid.
-                    <!-- TODO: Can we programatically kick the bidder out so we don't need this anymore -->
+                    <!-- TODO: Can we programmatically kick the bidder out so we don't need this anymore -->
                   </span>
                 </v-tooltip>
               </div>
@@ -66,8 +66,10 @@
 </template>
 
 <script setup>
+  /* Imports */
   import FacilityTabBase from '@/views/FacilityComponents/FacilityTabBase.vue';
 
+  /* Setup */
   const props = defineProps({
     facility: {
       type: Object,
@@ -78,8 +80,14 @@
       default: null,
     },
   });
-
   const emit = defineEmits(['save']);
+
+  /* Data */
+  // Helper function to check user role
+  const is = () => {
+    // Replace with your actual role checking logic
+    return true;
+  };
 
   function handleSave (_facility) {
     if (props.saveHandler) {
@@ -88,10 +96,4 @@
       emit('save', _facility);
     }
   }
-
-  // Helper function to check user role
-  const is = role => {
-    // Replace with your actual role checking logic
-    return true;
-  };
 </script>
