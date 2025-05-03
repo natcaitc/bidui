@@ -43,39 +43,46 @@
 
 <script setup>
   import { ref } from 'vue';
-  import { FacilityRepository } from '@/api/index.js';
   import { useRouter } from 'vue-router';
   import { useToastStore } from '@/stores/toasts';
-  import { getErrorMessage } from '@/utils/getErrorMessage.js';
+  import { useFacilityStore } from '@/stores/facility.js';
 
+  const facilityStore = useFacilityStore();
   const toast = useToastStore();
   const router = useRouter();
-  const FACILITY = new FacilityRepository()
   const facilityId = ref(); // User entered facilityId
 
   // Go to the facility homepage
   function go () {
     // Check if facility is valid
-    FACILITY.get(facilityId.value)
-      .then(r => {
-        console.log(r)
-        if (r.data.id === facilityId.value)
-          router.push({ name: 'facility.home', params: { facility: facilityId.value } })
-        else
-          toast.showMessage({
-            title: 'Input Error',
-            message: `${facilityId.value} is not a valid facility.`,
-            color: 'error',
-          })
+    if (facilityStore.validateFacilityId(facilityId.value))
+      router.push({ name: 'facility.home', params: { facility: facilityId.value } })
+    else
+      toast.showMessage({
+        title: 'Input Error',
+        message: `${facilityId.value} is not a valid facility.`,
+        color: 'error',
       })
-      .catch(e => {
-        console.log(e)
-        toast.showMessage({
-          title: 'Server Error',
-          message: getErrorMessage(e),
-          color: 'error',
-        })
-      })
+    // FACILITY.get(facilityId.value)
+    //   .then(r => {
+    //     console.log(r)
+    //     if (r.data.id === facilityId.value)
+    //       router.push({ name: 'facility.home', params: { facility: facilityId.value } })
+    //     else
+    //       toast.showMessage({
+    //         title: 'Input Error',
+    //         message: `${facilityId.value} is not a valid facility.`,
+    //         color: 'error',
+    //       })
+    //   })
+    //   .catch(e => {
+    //     console.log(e)
+    //     toast.showMessage({
+    //       title: 'Server Error',
+    //       message: getErrorMessage(e),
+    //       color: 'error',
+    //     })
+    //   })
   }
 
 </script>

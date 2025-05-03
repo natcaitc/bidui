@@ -18,7 +18,7 @@
 
 <script setup>
   /*import { ref } from 'vue';
-  import { facilities } from '@/stores/facilities.js';
+  import { facilities } from '@/stores/facility.js';
   const store = facilities();
   const facilityId = store.facilityId;
   const data = ref();

@@ -12,12 +12,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@awesome.me/kit-8a3b5a2f73@npm:^1.0.98":
-  version: 1.0.98
-  resolution: "@awesome.me/kit-8a3b5a2f73@npm:1.0.98::__archiveUrl=https%3A%2F%2Fnpm.fontawesome.com%2F%40awesome.me%2Fkit-8a3b5a2f73%2F-%2F1.0.98%2Fkit-8a3b5a2f73-1.0.98.tgz"
+"@awesome.me/kit-8a3b5a2f73@npm:^1.0.110":
+  version: 1.0.110
+  resolution: "@awesome.me/kit-8a3b5a2f73@npm:1.0.110::__archiveUrl=https%3A%2F%2Fnpm.fontawesome.com%2F%40awesome.me%2Fkit-8a3b5a2f73%2F-%2F1.0.110%2Fkit-8a3b5a2f73-1.0.110.tgz"
   dependencies:
     "@fortawesome/fontawesome-common-types": "npm:^6.7.2"
-  checksum: 10c0/9498d9e3a011b552ee281417c800f3040d9e66ff44750c050c9e0dea7ce8b56106558ee62ebdd6c3e0db822ea7ae0eea6aa3f6abb75c9333465e163176705877
+  checksum: 10c0/88180c3064a80f87ff486e7304249f8fa57dbe83f09d4e04bba5de3230e21b51f25a0b1023058695e04ce0d7c1f401c0912816d4eb23debbea182e77ccfdf8c9
   languageName: node
   linkType: hard
 
@@ -1962,7 +1962,7 @@ __metadata:
   resolution: "dms@workspace:."
   dependencies:
     "@auth0/auth0-spa-js": "npm:^2.1.3"
-    "@awesome.me/kit-8a3b5a2f73": "npm:^1.0.98"
+    "@awesome.me/kit-8a3b5a2f73": "npm:^1.0.110"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
     "@fortawesome/vue-fontawesome": "npm:^3.0.8"
     "@mdi/font": "npm:7.4.47"

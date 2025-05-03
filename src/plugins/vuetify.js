@@ -57,7 +57,7 @@ export default createVuetify({
       warning: 'fass fa-triangle-exclamation',
       error: 'fass fa-octagon-exclamation',
       checkboxOn: 'fass fa-square-check',
-      checkboxOff: 'far fa-square',
+      checkboxOff: 'fass fa-square',
       delimeter: 'fass fa-circle-dot',
       expand: 'fass fa-chevron-down',
       menu: 'fass fa-bars',

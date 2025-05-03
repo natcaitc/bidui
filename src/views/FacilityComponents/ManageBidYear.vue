@@ -38,7 +38,7 @@
 <script setup>
   import { computed, onMounted, ref, watch } from 'vue'
   import { FacilityRepository } from '@/api'
-  import { useFacilitiesStore } from '@/stores/facilities'
+  import { useFacilityStore } from '@/stores/facility.js'
 
   const props = defineProps({
     facility: {
@@ -61,7 +61,7 @@
   const dirty = ref(false)
   const dialogVisible = ref(false)
   const facilityRepo = new FacilityRepository()
-  const facilitiesStore = useFacilitiesStore()
+  const facilitiesStore = useFacilityStore()
 
   // Computed properties
   // const canChange = computed(() => {

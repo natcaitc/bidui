@@ -6,20 +6,30 @@
 
 // Composables
 import { createRouter, createWebHistory } from 'vue-router/auto'
-
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import Home from '@/views/Home.vue';
+import FacilityHome from '@/views/FacilityHome.vue';
+import { loadFacilityContext } from '@/router/loadFacilityContext.js';
+import { loadFacilities } from '@/router/loadFacilities.js';
 
 // import { setupLayouts } from 'virtual:generated-layouts'
 // import { routes } from 'vue-router/auto-routes'
 
-import { useFacilitiesStore } from '@/stores/facilities.js';
-import FacilityHome from '@/views/FacilityHome.vue';
 
 // Create routes
 const routes = [
-  { path: '/',
+  {
+    path: '/',
     component: HomeLayout,
+    beforeEnter: async (to, from, next) => {
+      try {
+        await loadFacilities();
+        next();
+      } catch (e) {
+        next({ name: 'home' });
+        console.log(e)
+      }
+    },
     children: [
       {
         path: '',
@@ -33,26 +43,31 @@ const routes = [
     component: () => import('@/layouts/AdminLayout.vue'),
     beforeEnter: async (to, from, next) => {
       try {
-        // Get the facility ID from the route parameter
-        const facilityId = to.params.facility;
-
-        // Access the facilities store
-        const facilitiesStore = useFacilitiesStore();
-
-        // Check if we already have this facility loaded
-        if (!facilitiesStore.facility || facilitiesStore.facility.id !== facilityId) {
-          // Load the facility data
-          await facilitiesStore.loadFacility(facilityId);
-        }
-
-        // Continue to the route
+        await loadFacilityContext(to.params.facility);
         next();
-      } catch (error) {
-        console.error('Failed to load facility data:', error);
-
-        // Redirect to home page or error page if loading fails
+      } catch (e) {
         next({ name: 'home' });
+        console.log(e)
       }
+      // try {
+      //   // Get the facility ID from the route parameter
+      //   const facilityId = to.params.facility;
+      //   const facilityStore = useFacilityStore();
+      //
+      //   // Check if we already have this facility loaded
+      //   if (!facilityStore.facility || facilityStore.facility.id !== facilityId) {
+      //     // Load the facility data
+      //     await facilityStore.loadFacility(facilityId);
+      //   }
+      //
+      //   // Continue to the route
+      //   next();
+      // } catch (error) {
+      //   console.error('Failed to load facility data:', error);
+      //
+      //   // Redirect to home page or error page if loading fails
+      //   next({ name: 'home' });
+      // }
     },
     children: [
       {

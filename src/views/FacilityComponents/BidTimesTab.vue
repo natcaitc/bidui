@@ -1,102 +1,134 @@
 <template>
-  <v-card flat>
-    <v-card-text>
-      <v-row>
-        <v-col cols="12">
-          <h6 class="text-h6">Configure Bidding Start & End Times</h6>
-          <v-card-text class="px-0">
-            <em>
-              Enter times in LOCAL time ({{ facilityTimezone }}). Times will remain the same regardless of
-              Daylight Saving Time.
-            </em>
-          </v-card-text>
-
-          <v-table class="mt-2">
-            <thead>
-              <tr>
-                <th style="width: 50%">Days of Week</th>
-                <th>Bid Start Time</th>
-                <th>Bid End Time</th>
-                <th v-if="facility.bid_days && facility.bid_days.length > 1" style="width: 25px" />
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(day, i) in bidHours" :key="i">
-                <td>
-                  <v-select
-                    v-model="day.days"
-                    chips
-                    closable-chips
-                    density="comfortable"
-                    :item-title="id => days.find(x => x.id === id).name"
-                    item-value="id"
-                    :items="filteredDays.map(() => day.id)"
-                    label="Select Days of Week"
-                    multiple
-                    variant="outlined"
-                  />
-                </td>
-                <td>
-                  <div class="d-flex align-center">
-                    <v-time-picker
-                      v-model="day.bid_start"
-                      class="me-2"
-                      format="24hr"
-                      variant="outlined"
-                    />
-                    <span class="font-weight-bold">{{ facilityTimezone }}</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-center">
-                    <v-time-picker
-                      v-model="day.bid_end"
-                      class="me-2"
-                      format="24hr"
-                      variant="outlined"
-                    />
-                    <span class="font-weight-bold">{{ facilityTimezone }}</span>
-                  </div>
-                </td>
-                <td v-if="facility.bid_days && facility.bid_days.length > 1">
-                  <v-btn
-                    color="error"
-                    icon
-                    variant="text"
-                    @click="facility.bid_days.splice(i, 1)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-
+  <FacilityTabBase :facility="facility" @save="handleSave">
+    <template #default="{ facility: _facility, hasChanges, prepareChanges }">
+      <v-card flat>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Configure Bidding Start & End Times</span>
           <v-btn
-            v-if="selectedDays.length < 7"
-            class="mt-2"
-            prepend-icon="mdi-plus"
-            variant="text"
-            @click="facility.bid_days.push({ days: [], bid_start: '', bid_end: '' })"
+            color="primary"
+            :disabled="!hasChanges"
+            @click="prepareChanges"
           >
-            New Days
+            Save Changes
           </v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" md="4">
-          <v-select
-            v-model="facility.timezone"
-            density="comfortable"
-            :items="timezones"
-            label="Facility Timezone"
-            variant="outlined"
-          />
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-table class="mt-2" density="compact">
+                <thead>
+                  <tr>
+                    <th style="width: 50%">Days of Week</th>
+                    <th>Closed</th>
+                    <th>Bid Start Time</th>
+                    <th>Bid End Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="day in _facility.bid_days" :key="day.weekday">
+                    <td>{{ day.weekday }}</td>
+                    <td>
+                      <v-checkbox
+                        v-model="day.closed"
+                        :false-value="false"
+                        :true-value="true"
+                        @change="handleDayClosedChange(day)"
+                      />
+                    </td>
+                    <td v-if="!day.closed">
+                      <v-text-field
+                        v-model="day.open"
+                        class="mt-4 mb-0"
+                        density="compact"
+                        label="Select Time"
+                        type="time"
+                        variant="outlined"
+                      />
+                    </td>
+                    <td v-if="!day.closed">
+                      <v-text-field
+                        v-model="day.close"
+                        class="mt-4 mb-0"
+                        density="compact"
+                        label="Select Time"
+                        type="time"
+                        variant="outlined"
+                      />
+                    </td>
+                    <td v-else colspan="2" />
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="4">
+              <v-select
+                v-model="_facility.timezone"
+                density="comfortable"
+                :items="timezones"
+                label="Facility Timezone"
+                variant="outlined"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </template>
+  </FacilityTabBase>
 </template>
 
 <script setup>
+  import FacilityTabBase from '@/views/FacilityComponents/FacilityTabBase.vue';
+
+  const props = defineProps({
+    facility: {
+      type: Object,
+      required: true,
+    },
+    saveHandler: {
+      type: Function,
+      default: null,
+    },
+  });
+
+  const emit = defineEmits(['save']);
+
+  // const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const timezones = [
+    'America/New_York', // Eastern
+    'America/Chicago', // Central
+    'America/Denver', // Mountain
+    'America/Phoenix', // Mountain (no DST)
+    'America/Los_Angeles', // Pacific
+    'America/Anchorage', // Alaska
+    'America/Adak', // Aleutian Islands
+    'Pacific/Honolulu', // Hawaii
+    'Pacific/Guam', // Guam
+    'America/Puerto_Rico', // Puerto Rico
+    'America/St_Thomas', // U.S. Virgin Islands
+    'America/Boise', // Special Mountain Zone
+    'America/Indiana/Indianapolis', // Eastern (no DST for some)
+    'America/Detroit', // Eastern variant
+  ];
+
+  // Handle when a day is marked as closed
+  function handleDayClosedChange (day) {
+    console.log('Day closed changed:', day.weekday, 'Closed:', day.closed);
+
+    if (day.closed) {
+      // Clear the time fields when marked as closed
+      day.open = '';
+      day.close = '';
+    }
+  }
+
+  function handleSave (_facility) {
+    console.log('BidTimesTab handleSave called with:', _facility);
+    if (props.saveHandler) {
+      props.saveHandler(_facility);
+    } else {
+      emit('save', _facility);
+    }
+  }
 </script>
