@@ -1,9 +1,10 @@
 <template>
   <div>
+    <!-- eslint-disable vue/attribute-hyphenation -->
     <slot
       :facility="localFacility"
-      :has-changes="hasChanges"
-      :prepare-changes="prepareChanges"
+      :hasChanges="hasChanges"
+      :prepareChanges="prepareChanges"
     />
   </div>
 </template>
@@ -102,7 +103,8 @@
       localFacility.value = JSON.parse(JSON.stringify(newFacility))
       localFacility.value.bid_days = deserializeBidDays(newFacility.bid_days);
       // Store the original facility state for comparison
-      originalFacility.value = JSON.stringify(newFacility)
+      originalFacility.value = JSON.stringify(localFacility.value)
     }
   }, { immediate: true, deep: true })
+  defineExpose({ hasChanges })
 </script>

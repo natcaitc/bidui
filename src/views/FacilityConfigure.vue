@@ -52,13 +52,13 @@
   import { storeToRefs } from 'pinia';
   import { useFacilityStore } from '@/stores/facility.js';
   import { useAreaStore } from '@/stores/area.js';
-  import { useToastStore } from '@/stores/toasts';
+  import { useToastStore } from '@/stores/toasts.js';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
-  import DetailsTab from './FacilityComponents/DetailsTab.vue'
-  import BidTimesTabNew from './FacilityComponents/BidTimesTab.vue'
-  import WebhooksTab from './FacilityComponents/WebhooksTab.vue'
-  import BidConfigurationsTab from './FacilityComponents/BidConfigurationsTab.vue'
-  import AreasTab from './FacilityComponents/AreasTab.vue'
+  import DetailsTab from '@/views/FacilityConfigure/Tabs/DetailsTab.vue'
+  import BidTimesTabNew from '@/views/FacilityConfigure/Tabs/BidTimesTab.vue'
+  import WebhooksTab from '@/views/FacilityConfigure/Tabs/WebhooksTab.vue'
+  import BidConfigurationsTab from '@/views/FacilityConfigure/Tabs/BidConfigurationsTab.vue'
+  import AreasTab from '@/views/FacilityConfigure/Tabs/AreasTab.vue'
 
   /* Data */
   const toast = useToastStore();

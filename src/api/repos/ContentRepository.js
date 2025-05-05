@@ -2,21 +2,20 @@
 import apiClient from '@/api/client.js';
 
 class ContentRepository {
-  constructor (facilityId) {
+  constructor () {
     this.client = apiClient;
-    this.facilityId = facilityId;
   }
   get () {
-    return this.client.get(`${this.facilityId}/contents`)
+    return this.client.get(`/contents`)
   }
   create (data) {
-    return this.client.post(`${this.facilityId}/contents/`, data)
+    return this.client.post(`/contents/`, data)
   }
   update (id, data) {
-    return this.client.put(`${this.facilityId}/contents/${id}`, data)
+    return this.client.put(`/contents/${id}`, data)
   }
   delete (id) {
-    return this.client.delete(`${this.facilityId}/contents/${id}`)
+    return this.client.delete(`/contents/${id}`)
   }
 }
 export default ContentRepository;

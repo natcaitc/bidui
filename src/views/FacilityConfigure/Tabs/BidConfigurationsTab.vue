@@ -6,9 +6,9 @@
           <span>Bid Configurations</span>
           <v-btn
             color="primary"
-            :disabled="!slotProps['has-changes']"
+            :disabled="!slotProps.hasChanges "
             prepend-icon="floppy-disk"
-            @click="slotProps['prepare-changes']"
+            @click="slotProps.prepareChanges"
           >
             Save Changes
           </v-btn>
@@ -67,7 +67,7 @@
 
 <script setup>
   /* Imports */
-  import FacilityTabBase from '@/views/FacilityComponents/FacilityTabBase.vue';
+  import FacilityTabBase from '@/views/FacilityConfigure/Tabs/FacilityTabBase.vue';
 
   /* Setup */
   const props = defineProps({

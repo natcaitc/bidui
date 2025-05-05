@@ -7,7 +7,7 @@ class AuthRepository {
   }
 
   getUser (userId = null, withMember = false) {
-    const path = (userId ? `/${userId}` : '');
+    const path = '/auth/get-user/' + (userId ? `/${userId}` : '');
     return this.client.get(path, { with_member: withMember })
   }
 

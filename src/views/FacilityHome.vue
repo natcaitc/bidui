@@ -10,35 +10,51 @@
 <script setup>
   /* Imports */
   import { ref } from 'vue'
-  import RichTextEditor from '@/composables/RichTextEditor.vue'
+  import RichTextEditor from '@/components/RichTextEditor.vue'
   import { ContentRepository } from '@/api/index.js';
   import { useToastStore } from '@/stores/toasts';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
+  import { logError } from '@/utils/logError.js';
 
   /* Data */
   const toast = useToastStore();
-  const CONTENT = new ContentRepository('dab');//facilityStore.getId)
+  const CONTENT = new ContentRepository();//facilityStore.getId)
   const content = ref('')
 
   /* Methods */
-  function updateContent (data) {
-    CONTENT.update(content.value.id, { content: data })
-      .then(() => {
+  async function getContent () {
+    try {
+      const r = await CONTENT.get()
+      if (r.data)
+        content.value = r.data
+    } catch (e) {
+      await logError(e, { tag: 'facilityHome.getContent' })
+    }
+  }
+  async function updateContent (data) {
+    try {
+      const r = await CONTENT.update(content.value.id, { content: data })
+      if (r && r.status === 200) {
         toast.showMessage({
           title: 'Success',
           message: 'Facility homepage data saved successfully.',
           color: 'success',
         })
+      }
+    } catch (e) {
+      console.log(e)
+      toast.showMessage({
+        title: 'Server Error',
+        message: getErrorMessage(e),
+        color: 'error',
       })
-      .catch(e => {
-        console.log(e)
-        toast.showMessage({
-          title: 'Server Error',
-          message: getErrorMessage(e),
-          color: 'error',
-        })
-      })
+    }
   }
+
+  /* Lifecycle */
+  onMounted(() => {
+    getContent()
+  })
 </script>
 
 <style scoped>

@@ -89,7 +89,7 @@
 
 <script setup>
   /* Imports */
-  /** @typedef {import('@/types')} Area */
+  /** @typedef {import('@/types/index.js')} Area */
   import { ref, watch } from 'vue';
 
   /* Setup */

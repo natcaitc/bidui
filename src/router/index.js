@@ -11,6 +11,7 @@ import Home from '@/views/Home.vue';
 import FacilityHome from '@/views/FacilityHome.vue';
 import { loadFacilityContext } from '@/router/loadFacilityContext.js';
 import { loadFacilities } from '@/router/loadFacilities.js';
+import { setupAuthGuard } from '@/router/authGuard.js';
 
 // import { setupLayouts } from 'virtual:generated-layouts'
 // import { routes } from 'vue-router/auto-routes'
@@ -108,6 +109,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
+
+// Inject authentication guard
+setupAuthGuard(router)
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {

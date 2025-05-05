@@ -88,7 +88,7 @@
 <script setup>
 /* Imports */
   import { computed, ref, watch } from 'vue';
-  import AreaForm from '@/views/FacilityComponents/AreaForm.vue';
+  import AreaForm from '@/views/FacilityConfigure/AreaForm.vue';
   import { useDisplay } from 'vuetify';
   import { useRoute } from 'vue-router';
 

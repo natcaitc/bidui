@@ -4,8 +4,6 @@ import Components from 'unplugin-vue-components/vite'
 import Fonts from 'unplugin-fonts/vite'
 import Layouts from 'vite-plugin-vue-layouts-next'
 import Vue from '@vitejs/plugin-vue'
-import VueRouter from 'unplugin-vue-router/vite'
-import { VueRouterAutoImports } from 'unplugin-vue-router'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
@@ -14,13 +12,12 @@ import { fileURLToPath, URL } from 'node:url'
 
 // Visualizer - DEV
 import { visualizer } from 'rollup-plugin-visualizer';
-import fs from "fs";
+import fs from 'fs';
 
 // https://vitejs.dev/config/
-export default defineConfig(({mode}) => ({
+export default defineConfig(({ mode }) => ({
   plugins: [
     visualizer({ open: true, filename: 'bundle-analysis.html' }), // This creates an HTML file with the bundle analysis
-    VueRouter(),
     Layouts(),
     Vue({
       template: { transformAssetUrls },
@@ -44,7 +41,6 @@ export default defineConfig(({mode}) => ({
     AutoImport({
       imports: [
         'vue',
-        VueRouterAutoImports,
         {
           'pinia': ['defineStore', 'storeToRefs'],
         },
@@ -59,9 +55,6 @@ export default defineConfig(({mode}) => ({
     exclude: [
       'vuetify',
       'vue-router',
-      'unplugin-vue-router/runtime',
-      'unplugin-vue-router/data-loaders',
-      'unplugin-vue-router/data-loaders/basic',
     ],
   },
   define: { 'process.env': {} },
@@ -89,9 +82,9 @@ export default defineConfig(({mode}) => ({
       '/api': {
         target: 'https://bidatc.test',
         changeOrigin: true,
-        secure: true
-      }
-    } : {}
+        secure: true,
+      },
+    } : {},
   },
   css: {
     preprocessorOptions: {
