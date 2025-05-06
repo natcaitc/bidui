@@ -9,7 +9,6 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import Home from '@/views/Home.vue';
 import FacilityHome from '@/views/FacilityHome.vue';
-import { loadFacilityContext } from '@/router/loadFacilityContext.js';
 import { loadFacilities } from '@/router/loadFacilities.js';
 import { setupAuthGuard } from '@/router/authGuard.js';
 
