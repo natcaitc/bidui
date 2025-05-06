@@ -3,6 +3,7 @@
     <v-col>
       <v-btn
         color="info"
+        :disabled="!can"
         prepend-icon="calendar"
         size="x-large"
         variant="elevated"
@@ -48,6 +49,10 @@
     facility: {
       type: Object,
       required: true,
+    },
+    can: {
+      type: Boolean,
+      default: false,
     },
     isSuper: {
       type: Boolean,

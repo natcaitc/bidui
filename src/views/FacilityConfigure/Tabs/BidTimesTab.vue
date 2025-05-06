@@ -30,6 +30,7 @@
                     <td>
                       <v-checkbox
                         v-model="day.closed"
+                        :disabled="!can"
                         :false-value="false"
                         :true-value="true"
                         @change="handleDayClosedChange(day)"
@@ -40,6 +41,7 @@
                         v-model="day.open"
                         class="mt-4 mb-0"
                         density="compact"
+                        :disabled="!can"
                         label="Select Time"
                         type="time"
                         variant="outlined"
@@ -50,6 +52,7 @@
                         v-model="day.close"
                         class="mt-4 mb-0"
                         density="compact"
+                        :disabled="!can"
                         label="Select Time"
                         type="time"
                         variant="outlined"
@@ -66,6 +69,7 @@
               <v-select
                 v-model="slotProps['facility'].timezone"
                 density="comfortable"
+                :disabled="!can"
                 :items="timezones"
                 label="Facility Timezone"
                 variant="outlined"
@@ -91,6 +95,10 @@
     saveHandler: {
       type: Function,
       default: null,
+    },
+    can: {
+      type: Boolean,
+      default: false,
     },
   });
   const emit = defineEmits(['save']);

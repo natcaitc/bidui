@@ -19,7 +19,7 @@
               <v-text-field
                 v-model="slotProps.facility.name"
                 density="comfortable"
-                :disabled="!is('super')"
+                :disabled="!isSuper"
                 label="Name"
                 variant="outlined"
               />
@@ -28,7 +28,7 @@
               <v-text-field
                 v-model="slotProps.facility.id"
                 density="comfortable"
-                :disabled="!is('super')"
+                :disabled="!isSuper"
                 label="Facility ID"
                 maxlength="3"
                 variant="outlined"
@@ -39,7 +39,7 @@
               <v-text-field
                 v-model="slotProps.facility.bid_year"
                 density="comfortable"
-                :disabled="!is('super')"
+                :disabled="!isSuper"
                 label="Bid Year"
                 :maxlength="4"
                 type="number"
@@ -59,8 +59,9 @@
             <v-col class="d-flex align-center text-center">
               <manage-bid-year
                 v-if="slotProps.facility.id"
+                :can="can"
                 :facility="facility"
-                :is-super="is('super')"
+                :is-super="isSuper"
               />
             </v-col>
           </v-row>
@@ -71,6 +72,7 @@
                 <v-switch
                   v-model="slotProps.facility.test_mode"
                   color="primary"
+                  :disabled="!can"
                   :false-value="0"
                   hide-details
                   label="Test Mode"
@@ -93,6 +95,7 @@
                 <v-switch
                   v-model="slotProps.facility.allow_text"
                   color="primary"
+                  :disabled="!can"
                   :false-value="0"
                   hide-details
                   label="Allow Text Messaging"
@@ -114,6 +117,7 @@
                 <v-switch
                   v-model="slotProps.facility.hide_all_content"
                   color="primary"
+                  :disabled="!can"
                   :false-value="0"
                   hide-details
                   label="Enable Privacy"
@@ -150,6 +154,14 @@
     saveHandler: {
       type: Function,
       default: null,
+    },
+    can: {
+      type: Boolean,
+      default: false,
+    },
+    isSuper: {
+      type: Boolean,
+      default: false,
     },
   });
   const emit = defineEmits(['save']);

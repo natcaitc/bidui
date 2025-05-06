@@ -1,6 +1,7 @@
 import { FacilityRepository } from '@/api/index.js';
 import { useFacilityStore } from '@/stores/facility'
 import { useAreaStore } from '@/stores/area'
+import { useAuthStore } from '@/stores/auth.js';
 
 const FACILITY = new FacilityRepository();
 
@@ -17,6 +18,7 @@ export async function loadFacilityContext (facilityId) {
     // Only load dependencies once facility is confirmed
     await Promise.all([
       useAreaStore().fetchAreas(),
+      useAuthStore().getScope(facilityId),
     ])
   }
 }

@@ -15,18 +15,25 @@
         </template>
         <template #item.slack_webhook="{ item }">
           <v-icon
-            class="cursor-pointer"
+            :class="{
+              'cursor-pointer': canEdit(item),
+              'cursor-not-allowed opacity-50 pointer-events-none': !canEdit(item)
+            }"
             :color="item.slack_webhook ? 'primary' : 'grey'"
             icon="fa-brands fa-slack"
-            @click="openDialog('slack', item)"
+            @click="canEdit(item) && openDialog('slack', item)"
           />
         </template>
         <template #item.discord_channel_id="{ item }">
           <v-icon
             class="cursor-pointer"
+            :class="{
+              'cursor-pointer': canEdit(item),
+              'cursor-not-allowed opacity-50 pointer-events-none': !canEdit(item)
+            }"
             :color="item.discord_channel_id ? 'primary' : 'grey'"
             icon="fa-brands fa-discord"
-            @click="openDialog('discord', item)"
+            @click="canEdit(item) && openDialog('discord', item)"
           />
         </template>
       </v-data-table>
@@ -102,6 +109,10 @@
       type: Function,
       default: null,
     },
+    canEdit: {
+      type: Function,
+      default: () => false,
+    },
   });
   const emit = defineEmits(['save', 'area-update']);
 
@@ -127,7 +138,6 @@
       displayDiscordDialog.value = true;
     }
   }
-
   // Save the webhook settings for the area being edited
   function saveWebhookSettings () {
     if (props.updateArea) {

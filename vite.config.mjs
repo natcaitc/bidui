@@ -78,6 +78,9 @@ export default defineConfig(({ mode }) => ({
       key: fs.readFileSync('./bidatc.test+4-key.pem'),
       cert: fs.readFileSync('./bidatc.test+4.pem'),
     },
+    watch: {
+      usePolling: true,
+    },
     proxy: mode === 'development' ? {
       '/api': {
         target: 'https://bidatc.test',

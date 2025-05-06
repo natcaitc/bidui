@@ -11,12 +11,14 @@ class AuthRepository {
     return this.client.get(path, { with_member: withMember })
   }
 
-  getScope (userId, facilityId) {
-    return this.client.get(`${userId}/get-scope`, { facility_id: facilityId })
+  getScope (facilityId, userId = null) {
+    console.log(userId, facilityId)
+    const path = userId ? `/auth/get-scope/${userId}` : '/auth/get-scope';
+    return this.client.get(path, { facility_id: facilityId })
   }
 
   getActivity (userId, page = 1) {
-    return this.client.get(`${userId}/getActivity`, { page });
+    return this.client.get(`/auth/activity/${userId}`, { page });
   }
 }
 export default AuthRepository

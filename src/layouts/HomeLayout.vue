@@ -6,10 +6,10 @@
       title="NATCA Schedule & Leave Bidding (BID)"
     >
       <v-btn icon>
-        <a href="my.natca.org"><font-awesome-icon icon="fa-kit fa-mynatca-icon" size="2x" /></a>
+        <a href="https://my.natca.org"><font-awesome-icon icon="fa-kit fa-mynatca-icon" size="2x" /></a>
       </v-btn>
       <v-btn color="primary" variant="tonal">
-        <a href="natca.org">natca.org</a>
+        <a href="https://natca.org">natca.org</a>
       </v-btn>
       <template #append>
         <v-menu>

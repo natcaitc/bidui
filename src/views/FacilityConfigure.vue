@@ -27,19 +27,40 @@
     <v-card-text>
       <v-tabs-window v-model="tab">
         <v-tabs-window-item value="details">
-          <DetailsTab :facility="facility" :save-handler="updateFacility" />
+          <DetailsTab
+            :can="authStore.can('facility:configure:edit', { areaId: null, facilityId: facility.id })"
+            :facility="facility"
+            :is-super="authStore.is('super')"
+            :save-handler="updateFacility"
+          />
         </v-tabs-window-item>
         <v-tabs-window-item>
-          <BidTimesTabNew :facility="facility" :save-handler="updateFacility" />
+          <BidTimesTabNew
+            :can="authStore.can('facility:configure:edit', { areaId: null, facilityId: facility.id })"
+            :facility="facility"
+            :save-handler="updateFacility"
+          />
         </v-tabs-window-item>
         <v-tabs-window-item>
-          <WebhooksTab :areas="areas" :update-area="updateArea" />
+          <WebhooksTab :areas="areas" :can-edit-area="canAdminArea" :update-area="updateArea" />
         </v-tabs-window-item>
         <v-tabs-window-item>
-          <BidConfigurationsTab :facility="facility" :save-handler="updateFacility" />
+          <BidConfigurationsTab
+            :can="authStore.can('facility:configure:edit', { areaId: null, facilityId: facility.id })"
+            :facility="facility"
+            :save-handler="updateFacility"
+          />
         </v-tabs-window-item>
         <v-tabs-window-item>
-          <AreasTab :areas="areas" :create-area="createArea" :delete-area="deleteArea" :update-area="updateArea" />
+          <AreasTab
+            :areas="areas"
+            :can-edit-area="canAdminArea"
+            :can-edit-facility="authStore.can('facility:configure:edit', { areaId: null, facilityId: facility.id })"
+            :create-area="createArea"
+            :delete-area="deleteArea"
+            :is-admin="authStore.isAtLeast('admin')"
+            :update-area="updateArea"
+          />
         </v-tabs-window-item>
       </v-tabs-window>
     </v-card-text>
@@ -52,6 +73,7 @@
   import { storeToRefs } from 'pinia';
   import { useFacilityStore } from '@/stores/facility.js';
   import { useAreaStore } from '@/stores/area.js';
+  import { useAuthStore } from '@/stores/auth.js';
   import { useToastStore } from '@/stores/toasts.js';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
   import DetailsTab from '@/views/FacilityConfigure/Tabs/DetailsTab.vue'
@@ -64,6 +86,7 @@
   const toast = useToastStore();
   const facilityStore = useFacilityStore();
   const areaStore = useAreaStore();
+  const authStore = useAuthStore();
   const { facility } = storeToRefs(facilityStore);
   const { areas } = storeToRefs(areaStore);
   const tab = ref(0)
@@ -97,7 +120,6 @@
       });
     }
   }
-
   // Handle area updates from tabs
   async function createArea (data) {
     try {
@@ -121,7 +143,6 @@
       });
     }
   }
-
   // Handle area updates from tabs
   async function updateArea (data) {
     try {
@@ -145,7 +166,6 @@
       });
     }
   }
-
   // Handle area updates from tabs
   async function deleteArea (data) {
     try {
@@ -169,5 +189,12 @@
         color: 'error',
       });
     }
+  }
+
+  function canAdminArea (item) {
+    return authStore.can('area:admin', {
+      areaId: item.id,
+      facilityId: item.facility_id,
+    })
   }
 </script>

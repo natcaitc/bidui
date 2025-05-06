@@ -6,6 +6,7 @@
         <v-btn
           class="mr-2"
           color="success"
+          :disabled="!canEditFacility"
           @click="createAreaForm"
         >
           <v-icon v-if="display.mdAndUp.value" icon="plus" start />
@@ -27,6 +28,17 @@
             <td>
               <div class="d-flex justify-end">
                 <v-btn
+                  v-if="!canEditArea(item)"
+                  color="primary"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click="editAreaForm(item, index)"
+                >
+                  <v-icon size="small">fass fa-eye</v-icon>
+                </v-btn>
+                <v-btn
+                  v-if="canEditArea(item)"
                   color="primary"
                   icon
                   size="small"
@@ -38,6 +50,7 @@
                 <v-btn
                   v-if="(areas || []).length > 1"
                   color="error"
+                  :disabled="!canEditFacility"
                   icon
                   size="small"
                   variant="text"
@@ -74,12 +87,18 @@
     <v-card>
       <v-card-title>Area Details</v-card-title>
       <v-card-text>
-        <AreaForm v-model="_area" :is-edit="false" />
+        <AreaForm v-model="_area" :can-edit-area="canEditArea(_area)" :can-edit-facility="canEditFacility" :is-edit="false" />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn text @click="showFormDialog = false">Cancel</v-btn>
-        <v-btn color="success" prepend-icon="floppy-disk" variant="elevated" @click="handleSave">Save</v-btn>
+        <v-btn
+          color="success"
+          :disabled="!canEditArea(_area)"
+          prepend-icon="floppy-disk"
+          variant="elevated"
+          @click="handleSave"
+        >Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -103,6 +122,14 @@
     areas: {
       type: Array,
       default: () => [],
+    },
+    canEditFacility: {
+      type: Boolean,
+      default: false,
+    },
+    canEditArea: {
+      type: Function,
+      default: () => false,
     },
     createArea: {
       type: Function,

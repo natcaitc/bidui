@@ -16,7 +16,10 @@ class ApiClient {
     })
 
     this.getAuthToken = null // will be injected later
-    this.tokenReady = false
+    this._readyResolver = null
+    this.ready = new Promise(resolve => {
+      this._readyResolver = resolve
+    })
   }
 
   /**
@@ -24,9 +27,9 @@ class ApiClient {
    * @param {Function} getTokenFn - Function that returns a promise resolving to a token
    */
   async useAuth0TokenFunction (getTokenFn) {
-    this.tokenReady = true
     this.getAuthToken = getTokenFn
     await this.setAuthInterceptor()
+    this._readyResolver() // Resolve the promise now that the client is ready
   }
 
   async setAuthInterceptor () {

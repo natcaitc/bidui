@@ -27,12 +27,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@awesome.me/kit-8a3b5a2f73@npm:^1.0.110":
-  version: 1.0.110
-  resolution: "@awesome.me/kit-8a3b5a2f73@npm:1.0.110::__archiveUrl=https%3A%2F%2Fnpm.fontawesome.com%2F%40awesome.me%2Fkit-8a3b5a2f73%2F-%2F1.0.110%2Fkit-8a3b5a2f73-1.0.110.tgz"
+"@awesome.me/kit-8a3b5a2f73@npm:^1.0.113":
+  version: 1.0.113
+  resolution: "@awesome.me/kit-8a3b5a2f73@npm:1.0.113"
   dependencies:
     "@fortawesome/fontawesome-common-types": "npm:^6.7.2"
-  checksum: 10c0/88180c3064a80f87ff486e7304249f8fa57dbe83f09d4e04bba5de3230e21b51f25a0b1023058695e04ce0d7c1f401c0912816d4eb23debbea182e77ccfdf8c9
+  checksum: 10c0/0a6b1fbe8b44a5e0091097d9058869ddaf3500737f2764e9ad54e284a9075f8879eac7a35fb31fab8be51f424df036f014858c35796138a915cd6b86b38e66d3
   languageName: node
   linkType: hard
 
@@ -1938,7 +1938,7 @@ __metadata:
   resolution: "dms@workspace:."
   dependencies:
     "@auth0/auth0-vue": "npm:^2.4.0"
-    "@awesome.me/kit-8a3b5a2f73": "npm:^1.0.110"
+    "@awesome.me/kit-8a3b5a2f73": "npm:^1.0.113"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
     "@fortawesome/vue-fontawesome": "npm:^3.0.8"
     "@mdi/font": "npm:7.4.47"

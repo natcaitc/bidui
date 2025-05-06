@@ -4,6 +4,7 @@
       <v-col cols="6">
         <v-text-field
           v-model="modelValue.name"
+          :disabled="!canEditFacility"
           label="Area Name"
           variant="outlined"
         />
@@ -11,6 +12,8 @@
       <v-col cols="2">
         <v-text-field
           v-model="modelValue.tag"
+          :disabled="!canEditFacility"
+
           label="Tag"
           maxlength="3"
           variant="outlined"
@@ -19,7 +22,7 @@
       <v-col cols="4">
         <v-text-field
           v-model="modelValue.slug"
-          :disabled="isEdit"
+          :disabled="!canEditFacility"
           label="Slug"
           :placeholder="isEdit ? '' : 'Auto-generated from name if left empty'"
           variant="outlined"
@@ -35,6 +38,7 @@
           <v-switch
             v-model="modelValue.use_bid_aid"
             color="primary"
+            :disabled="!canEditArea"
             :false-value="0"
             hide-details
             label="Require Bidders to Enter Bids"
@@ -59,6 +63,7 @@
           <v-switch
             v-model="modelValue.subtract_holiday_leave"
             color="primary"
+            :disabled="!canEditArea"
             :false-value="0"
             hide-details
             label="Subtract Holiday Leave"
@@ -87,6 +92,7 @@
       <v-col cols="6">
         <v-text-field
           v-model="modelValue.grace_hours"
+          :disabled="!canEditFacility"
           label="Grace Hours For Bidding Leave Slot"
           maxlength="1"
           type="number"
@@ -110,6 +116,7 @@
       <v-col cols="6">
         <v-text-field
           v-model="modelValue.accrual_slot_factor"
+          :disabled="!canEditFacility"
           label="Accrual Slot Calculation Factor"
           maxlength="1"
           type="number"
@@ -135,7 +142,7 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue';
+  import { defineEmits, defineProps } from 'vue';
 
   const props = defineProps({
     modelValue: {
@@ -143,6 +150,14 @@
       required: true,
     },
     isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    canEditArea: {
+      type: Boolean,
+      default: false,
+    },
+    canEditFacility: {
       type: Boolean,
       default: false,
     },

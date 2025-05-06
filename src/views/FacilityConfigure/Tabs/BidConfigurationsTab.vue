@@ -20,6 +20,7 @@
                 <v-switch
                   v-model="slotProps.facility.auto_open_close"
                   color="primary"
+                  :disabled="!can"
                   :false-value="0"
                   hide-details
                   label="Auto Open/Close Bidding"
@@ -41,7 +42,7 @@
                 <v-text-field
                   v-model="slotProps.facility.bid_lock_time"
                   density="comfortable"
-                  :disabled="!is('super')"
+                  :disabled="!can"
                   label="Bid Lock Time"
                   variant="outlined"
                 />
@@ -78,6 +79,10 @@
     saveHandler: {
       type: Function,
       default: null,
+    },
+    can: {
+      type: Boolean,
+      default: false,
     },
   });
   const emit = defineEmits(['save']);
