@@ -1,19 +1,23 @@
-// stores/authGuard.js
+// stores/auth.js
+
 /* Imports */
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { AuthRepository, MemberRepository } from '@/api/index.js'
 import { logError } from '@/utils/logError.js';
 import permissions from '@/utils/permissions.js';
-// import { useMemberStore } from './member'
-// import { useAlertsStore } from './alerts'
+import { useFacilityStore } from './facility';
+import { useAreaStore } from './area';
+import { auth0 } from '@/plugins/auth0.js';
 
 export const useAuthStore = defineStore('auth', () => {
   /* State */
   const authRepository = new AuthRepository()
+  /** @type {import('vue').Ref<import('@/types').User|null>} */
   const user = ref(null)
   const member = ref({})
-  const scope = ref({})
+  /** @type {import('vue').Ref<import('@/types').Scope|null>} */
+  const scope = ref(null)
   const status = ref('init') // 'init' | 'logged-in' | 'error' | 'no-user'
   const mocking = ref(false)
   const loading = ref(false)
@@ -30,6 +34,24 @@ export const useAuthStore = defineStore('auth', () => {
 
   /* Getters */
   const loggedIn = computed(() => status.value === 'logged-in')
+
+  /**
+   * Determines if a user has the required permissions within a certain context.
+   * !! Attempts to load Facility and Area context from the store
+   *
+   * @param {string} permission - The name of the permission to check, as defined in the permissions object.
+   * @param {Object} [context={}] - Optional context for the permission check.
+   * @param {number|null} [context.areaId=null] - The ID of the current area. If not provided, the current area's ID from the area store is used.
+   * @param {string|null} [context.facilityId=null] - The ID of the current facility. If not provided, the current facility's ID from the facility store is used.
+   * @returns {boolean} - Returns `true` if the user has the required permission, `false` otherwise.
+   *
+   * The function checks the user's role and context (facility and/or area) against pre-defined
+   * permissions to determine if the action is allowed. Superusers are always granted permissions.
+   * It also handles scenarios where the facility and area contexts are not provided, defaulting
+   * to the current contexts from their respective stores.
+   *
+   * Logs details about the permission check process for debugging purposes.
+   */
   const can = (permission, { areaId = null, facilityId = null } = {}) => {
     if (!user.value) {
       console.log('[can] No user')
@@ -48,8 +70,20 @@ export const useAuthStore = defineStore('auth', () => {
       return false
     }
 
+    // Get current facility context if not provided
+    if (!facilityId) {
+      const facilityStore = useFacilityStore()
+      facilityId = facilityStore?.facility?.id || null
+    }
+
+    // Get current area context if not provided
+    if (!areaId) {
+      const areaStore = useAreaStore()
+      areaId = areaStore?.area?.id || null
+    }
+
     const inRoles = rule.roles.includes(role)
-    const hasFacility = !!scope.value.facility_id && scope.value.facility_id === facilityId
+    const hasFacility = !!scope.value && !!scope.value.facility_id && scope.value.facility_id === facilityId
     const hasArea = areaId ? (scope.value.areas || []).includes(areaId) : true
 
     console.log(`[can] permission: ${permission}, role: ${role}, inRoles: ${inRoles}, hasFacility: ${hasFacility}, hasArea: ${hasArea}`)
@@ -62,7 +96,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!user.value) return false
     if (user.value.role_id === 'super') return true
 
-    return roles.value.includes(role)
+    return user.value.role_id === role
   }
   const isAny = roles => {
     if (!user.value) return false
@@ -80,25 +114,12 @@ export const useAuthStore = defineStore('auth', () => {
     return userIndex >= targetIndex
   }
 
-
-  const roles = computed(() => scope.value.roles || [])
   const role = computed(() => {
     return user.value ? roleNames[user.value.role_id] : null
   })
-  const roleName = roleId => roleNames[roleId]
   const isScopeSet = facilityId => {
+    if (!scope.value) return false
     return scope.value.facility_id === facilityId && !!scope.value.user_id
-  }
-  const hasRole = (facilityId, requiredRoles) => {
-    const requestedRoles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles]
-    return (
-      scope.value.facility_id === facilityId &&
-      scope.value.user_id &&
-      requestedRoles.some(role => roles.value.includes(role))
-    )
-  }
-  const isLoggedInUser = memberID => {
-    return user.value?.member_id === memberID
   }
 
   /* Actions */
@@ -112,16 +133,17 @@ export const useAuthStore = defineStore('auth', () => {
       if (r.data?.member_id) {
         console.log('auth.getUser: user found:', r.data)
         await setUser(r.data)
-        loading.value = false
       } else {
         console.log('auth.getUser: user not found:', r.data)
 
         status.value = 'no-user'
       }
+      loading.value = false
       return r.data
     } catch (e) {
       status.value = 'no-user'
       await logError(e, { tag: 'auth.getUser' })
+      loading.value = false
       return null
     }
   }
@@ -160,12 +182,24 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function login () {
+    const facilityStore = useFacilityStore()
+    const path = `${window.location.origin}/login` + (facilityStore.facility ? `?facility=${facilityStore.facility.id}` : '')
+    // Logging in with redirect - no need to update state since it will be lost
+    await auth0.loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: path,
+      },
+    })
+  }
 
-  function logout () {
-    user.value = null
-    scope.value = {}
-    status.value = 'init'
-    mocking.value = false
+  async function logout () {
+    // Logout redirects - nothing else to do here
+    await auth0.logout({
+      authorizationParams: {
+        redirect_uri: window.location.origin + '/logout',
+      },
+    })
   }
   async function mockUser (payload) {
     mocking.value = !mocking.value
@@ -200,22 +234,31 @@ export const useAuthStore = defineStore('auth', () => {
 
     // getters
     loggedIn,
-    roles,
     role,
     can,
     is,
     isAny,
     isAtLeast,
-    // roleName,
-    // isScopeSet,
-    // hasRole,
-    // is,
-    // isLoggedInUser,
 
     // actions
-    // logout,
-    // mockUser,
     getUser,
     getScope,
+    login,
+    logout,
   }
 })
+
+/** OLD DEFS */
+// const roleName = roleId => roleNames[roleId]
+// const hasRole = (facilityId, requiredRoles) => {
+//   const requestedRoles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles]
+//   return (
+//     scope.value.facility_id === facilityId &&
+//     scope.value.user_id &&
+//     requestedRoles.some(role => roles.value.includes(role))
+//   )
+// }
+// const isLoggedInUser = memberID => {
+//   return user.value?.member_id === memberID
+// }
+// const roles = computed(() => scope.value.roles || [])

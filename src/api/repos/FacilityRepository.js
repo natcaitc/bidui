@@ -12,17 +12,37 @@ class FacilityRepository {
   create (data) {
     return this.client.post('/facilities', data)
   }
-  update (id, data) {
-    return this.client.put(`/facilities/${id}`, data)
-  }
   delete (id) {
     return this.client.delete(`/facilities/${id}`)
   }
-  getEmployeeTypes (id) {
-    return this.client.get(`/facilities/${id}/employee-types`)
+
+  /**
+     * *** CONTEXT SET ***
+     * @param {string} id
+     * @param {Object} data
+     */
+  update (id, data) {
+    return this.client.put(`/update`, data)
   }
-  activate (id) {
-    return this.client.post(`/facilities/${id}/activate`)
+
+  /**
+   * Retrieves the list of employee types from the server.
+   *
+   * @return {Promise<Object>} A promise that resolves to the response containing employee types.
+   */
+  getEmployeeTypes () {
+    return this.client.get(`/employee-types`)
   }
 }
 export default FacilityRepository;
+
+/** OLD FILE */
+/**
+ * Sends a POST request to activate a specific resource.
+ * !! Assumes basepath is already set (e.g., /api/facilityId/employee-types)
+ *
+ */
+// activate()
+// {
+//   return this.client.post(`/activate`)
+// }

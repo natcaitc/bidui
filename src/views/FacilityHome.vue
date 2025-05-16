@@ -9,17 +9,18 @@
 </template>
 <script setup>
   /* Imports */
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import RichTextEditor from '@/components/RichTextEditor.vue'
   import { ContentRepository } from '@/api/index.js';
-  import { useToastStore } from '@/stores/toasts';
+  import { useToastStore } from '@/stores/toasts.js';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
   import { logError } from '@/utils/logError.js';
 
   /* Data */
   const toast = useToastStore();
   const CONTENT = new ContentRepository();//facilityStore.getId)
-  const content = ref('')
+  /** @type {import('vue').Ref<import('@/types').Content>} */
+  const content = ref({ id: null, content: '' })
 
   /* Methods */
   async function getContent () {
@@ -31,9 +32,13 @@
       await logError(e, { tag: 'facilityHome.getContent' })
     }
   }
+
+  /**
+   * @param {string} data - the HTML or markdown from the editor
+   */
   async function updateContent (data) {
     try {
-      const r = await CONTENT.update(content.value.id, { content: data })
+      const r = await CONTENT.update(content.value?.id, { content: data })
       if (r && r.status === 200) {
         toast.showMessage({
           title: 'Success',

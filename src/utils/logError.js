@@ -44,12 +44,13 @@ function resolveContextSafe () {
 
 /**
  * Logs an error to Supabase with smart context (auto + manual)
- * @param {Error|string} error - The error to log
+ * @param {Error|string|undefined} e - The error to log
  * @param {object} [manualContext] - Optional overrides: userId, route, component, tag, etc.
  */
-export async function logError (error, manualContext = {}) {
+export async function logError (e, manualContext = {}) {
+  const error = e instanceof Error ? e : new Error(e)
   const message = typeof error === 'string' ? error : error.message
-  const stack = error?.stack || null
+  const stack = error?.stack || undefined
   const inferredComponent = getComponentNameFromStack(stack)
 
   const { userId: autoUserId, routePath } = resolveContextSafe()

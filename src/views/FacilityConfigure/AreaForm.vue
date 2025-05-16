@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="6">
         <v-text-field
-          v-model="modelValue.name"
+          v-model="_area.name"
           :disabled="!canEditFacility"
           label="Area Name"
           variant="outlined"
@@ -11,7 +11,7 @@
       </v-col>
       <v-col cols="2">
         <v-text-field
-          v-model="modelValue.tag"
+          v-model="_area.tag"
           :disabled="!canEditFacility"
 
           label="Tag"
@@ -21,7 +21,7 @@
       </v-col>
       <v-col cols="4">
         <v-text-field
-          v-model="modelValue.slug"
+          v-model="_area.slug"
           :disabled="!canEditFacility"
           label="Slug"
           :placeholder="isEdit ? '' : 'Auto-generated from name if left empty'"
@@ -36,7 +36,7 @@
       <v-col cols="6">
         <div class="d-flex align-center">
           <v-switch
-            v-model="modelValue.use_bid_aid"
+            v-model="_area.use_bid_aid"
             color="primary"
             :disabled="!canEditArea"
             :false-value="0"
@@ -61,7 +61,7 @@
       <v-col cols="6">
         <div class="d-flex align-center">
           <v-switch
-            v-model="modelValue.subtract_holiday_leave"
+            v-model="_area.subtract_holiday_leave"
             color="primary"
             :disabled="!canEditArea"
             :false-value="0"
@@ -91,7 +91,7 @@
     <v-row>
       <v-col cols="6">
         <v-text-field
-          v-model="modelValue.grace_hours"
+          v-model="_area.grace_hours"
           :disabled="!canEditFacility"
           label="Grace Hours For Bidding Leave Slot"
           maxlength="1"
@@ -115,7 +115,7 @@
       </v-col>
       <v-col cols="6">
         <v-text-field
-          v-model="modelValue.accrual_slot_factor"
+          v-model="_area.accrual_slot_factor"
           :disabled="!canEditFacility"
           label="Accrual Slot Calculation Factor"
           maxlength="1"
@@ -142,10 +142,11 @@
 </template>
 
 <script setup>
+  import { computed, ref, watch } from 'vue';
   import { defineEmits, defineProps } from 'vue';
 
   const props = defineProps({
-    modelValue: {
+    area: {
       type: Object,
       required: true,
     },
@@ -163,5 +164,10 @@
     },
   });
 
-  const emit = defineEmits(['update:modelValue']);
+  const _area = computed({
+    get: () => props.area,
+    set: val => emit('update:area', val),
+  })
+
+  const emit = defineEmits(['update:area']);
 </script>

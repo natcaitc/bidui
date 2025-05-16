@@ -6,24 +6,31 @@ class RosterRepository {
     this.client = apiClient;
   }
 
-  get (id = null, bidYear = null) {
-    const path = '/rosters' + (id ? `/${id}` : '')
+  /** @param {import('@/types/context').RosterContextData} context */
+  get (context) {
+    const { areaSlug, id, bidYear } = context;
+    const path = `${areaSlug}/rosters` + (id ? `/${id}` : '')
     return this.client.get(path, { bidYear })
   }
-  create (data) {
-    return this.client.post('/rosters', data)
+  /** @param {import('@/types/context').RosterContextData} context */
+  create (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`/${areaSlug}/rosters`, data)
   }
-  update (id, data) {
-    return this.client.put(`/rosters/${id}`, data)
+  /** @param {import('@/types/context').RosterContextData} context */
+  update (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.put(`/${areaSlug}/rosters/${id}`, data)
   }
-  delete (id) {
-    return this.client.delete(`/rosters/${id}`)
+  /** @param {import('@/types/context').RosterContextData} context */
+  delete (context) {
+    const { areaSlug, id } = context;
+    return this.client.delete(`/${areaSlug}/rosters/${id}`)
   }
-  members (id) {
-    return this.client.get(`/rosters/${id}/members`)
-  }
-  order (id, data) {
-    return this.client.put(`/rosters/${id}/order`, { changes: data } )
+  /** @param {import('@/types/context').RosterContextData} context */
+  teamsMembers (context) {
+    const { areaSlug, id } = context;
+    return this.client.get(`/${areaSlug}/rosters/${id}/teams-members`)
   }
 }
 export default RosterRepository;

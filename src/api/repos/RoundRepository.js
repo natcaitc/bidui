@@ -5,23 +5,42 @@ class RoundRepository {
   constructor () {
     this.client = apiClient;
   }
-  get (bidYear) {
-    return this.client.get('/rounds', { bid_year: bidYear })
+
+  /** @param {import('@/types/context').RoundContextData} context */
+  get (context) {
+    const { areaSlug, id, bidYear } = context;
+    const path = `${areaSlug}/rounds` + (id ? `/${id}` : '');
+    return this.client.get(path, { bid_year: bidYear })
   }
-  create (data) {
-    return this.client.post('/rounds', data)
+  /** @param {import('@/types/context').RoundContextData} context */
+  create (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`${areaSlug}/rounds`, data)
   }
-  update (id, data) {
-    return this.client.put(`/rounds/${id}`, data)
+  /** @param {import('@/types/context').RoundContextData} context */
+  update (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.put(`${areaSlug}/rounds/${id}`, data)
   }
-  delete (id) {
-    return this.client.delete(`/rounds/${id}`)
+  /** @param {import('@/types/context').RoundContextData} context */
+  delete (context) {
+    const { areaSlug, id } = context;
+    return this.client.delete(`${areaSlug}/rounds/${id}`)
   }
-  createBidWindows (id, data) {
-    return this.client.post(`/rounds/${id}/windows`, data)
+  /** @param {import('@/types/context').RoundContextData} context */
+  teamsBidders (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.get(`${areaSlug}/rounds/${id}/bidders`, data)
   }
-  reset (id) {
-    return this.client.post(`/rounds/${id}/reset`)
+  /** @param {import('@/types/context').RoundContextData} context */
+  createBidWindows (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.post(`${areaSlug}/rounds/${id}/windows`, data)
+  }
+  /** @param {import('@/types/context').RoundContextData} context */
+  reset (context) {
+    const { areaSlug, id } = context;
+    return this.client.post(`${areaSlug}/rounds/${id}/reset`)
   }
 }
 export default RoundRepository;

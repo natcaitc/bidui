@@ -12,19 +12,7 @@
         <a href="https://natca.org">natca.org</a>
       </v-btn>
       <template #append>
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn append-icon="caret-down" v-bind="props">Jason</v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item>
-              <h3>Jason Doss</h3>
-              <small>Member Number: 40162</small>
-            </v-list-item>
-            <v-list-item append-icon="right-from-bracket" title="Logout" />
-          </v-list>
-        </v-menu>
+        <login-logout />
       </template>
     </v-app-bar>
 
@@ -37,6 +25,7 @@
 <script setup>
   import Footer from '@/layouts/Footer.vue'
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+  import LoginLogout from '@/components/LoginLogout.vue';
 </script>
 
 <style scoped>

@@ -20,6 +20,16 @@ export default {
     requiresFacility: true,
     requiresArea: true,
   },
+  'round:view': {
+    roles: ['bidaid', 'arearep', 'admin'],
+    requiresFacility: true,
+    requiresArea: true,
+  },
+  'round:admin': {
+    roles: ['arearep', 'admin'],
+    requiresFacility: true,
+    requiresArea: true,
+  },
   'member:admin': {
     roles: ['admin'],
     requiresFacility: true,

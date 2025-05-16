@@ -1,5 +1,6 @@
 // client.js
 import axios from 'axios'
+import { auth0 } from '@/plugins/auth0.js';
 
 class ApiClient {
   constructor () {
@@ -14,73 +15,53 @@ class ApiClient {
       },
       withCredentials: true,
     })
-
-    this.getAuthToken = null // will be injected later
-    this._readyResolver = null
-    this.ready = new Promise(resolve => {
-      this._readyResolver = resolve
-    })
   }
 
-  /**
-   * Set up the client with a token getter function from Auth0
-   * @param {Function} getTokenFn - Function that returns a promise resolving to a token
-   */
-  async useAuth0TokenFunction (getTokenFn) {
-    this.getAuthToken = getTokenFn
-    await this.setAuthInterceptor()
-    this._readyResolver() // Resolve the promise now that the client is ready
+  async checkToken () {
+    console.log('[ApiClient::checkToken] Auth0 token acquired')
+    return await auth0.getAccessTokenSilently()
   }
 
   async setAuthInterceptor () {
-    this.client.interceptors.request.use(async config => {
-      try {
-        console.log('try to intercept')
-        if (this.getAuthToken) {
-          const token = await this.getAuthToken()
-          console.log('🔐 Attaching token:', token)
-
-          if (token) {
-            console.log('Token exists, attaching to request')
-            config.headers.Authorization = `Bearer ${token}`
-          }
-        }
-      } catch (err) {
-        console.warn('Auth token not available:', err)
-      }
-      return config
-    })
-
-    this.client.interceptors.response.use(
-      response => response,
-      error => {
-        if (error.response?.status === 401) {
-          // window.location.href = '/'
-          console.log('401: interceptor response failed')
-        }
-        return Promise.reject(error)
-      }
-    )
-  }
-
-  // Fallback for local dev without Auth0
-  initializeInterceptorsWithStaticToken (getAuthToken) {
-    this.client.interceptors.request.use(async config => {
-      const token = await getAuthToken()
+    console.log('[ApiClient] Setting up Auth0 interceptor')
+    try {
+      const token = await auth0.getAccessTokenSilently()
+      console.log('[ApiClient] Auth0 token acquired', token)
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        this.client.interceptors.request.use(async config => {
+          console.log('Token exists, attaching to request')
+          config.headers.Authorization = `Bearer ${token}`
+          return config
+        })
+      } else {
+        console.warn('Auth token not available:')
       }
-      return config
-    })
+
+      this.client.interceptors.response.use(
+        response => response,
+        error => {
+          if (error.response?.status === 401) {
+            // window.location.href = '/'
+            console.log('401: interceptor response failed')
+          }
+          return Promise.reject(error)
+        }
+      )
+    } catch (e) {
+      console.warn('[apiClient::setAuthInterceptor] - Auth token not available:', e)
+    }
   }
 
   // ---- API Methods ----
   setBaseURL (path) {
-    this.client.defaults.baseURL = `${this.baseURL}/${path}`
+    this.client.defaults.baseURL = `${this.baseURL}` + (path ? `/${path}` : '')
   }
 
-  get (url, data = {}, config = {}) {
-    return this.client.get(url, { ...config, params: { ...data } })
+  async get (url, data = {}, config = {}) {
+    console.log('[ApiClient] Set Interceptor', url, data, config)
+    await this.setAuthInterceptor()
+    console.log('[ApiClient] GET', url, data, config)
+    return await this.client.get(url, { ...config, params: { ...data } })
   }
 
   post (url, data, config) {

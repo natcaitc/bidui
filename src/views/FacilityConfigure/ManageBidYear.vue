@@ -38,7 +38,7 @@
 
 <script setup>
   /* Imports */
-  /** @typedef {import('@/types').Facility} Facility */
+  /** @typedef {import('@/types/index.js').Facility} Facility */
   import { computed, onMounted, ref, watch } from 'vue'
   import { FacilityRepository } from '@/api'
   import { useFacilityStore } from '@/stores/facility.js'

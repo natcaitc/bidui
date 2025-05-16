@@ -42,7 +42,7 @@
           />
         </v-tabs-window-item>
         <v-tabs-window-item>
-          <WebhooksTab :areas="areas" :can-edit-area="canAdminArea" :update-area="updateArea" />
+          <WebhooksTab :can-edit="canAdminArea" />
         </v-tabs-window-item>
         <v-tabs-window-item>
           <BidConfigurationsTab
@@ -53,14 +53,12 @@
         </v-tabs-window-item>
         <v-tabs-window-item>
           <AreasTab
-            :areas="areas"
             :can-edit-area="canAdminArea"
             :can-edit-facility="authStore.can('facility:configure:edit', { areaId: null, facilityId: facility.id })"
-            :create-area="createArea"
-            :delete-area="deleteArea"
             :is-admin="authStore.isAtLeast('admin')"
-            :update-area="updateArea"
           />
+          <!--          :update-area="updateArea"-->
+
         </v-tabs-window-item>
       </v-tabs-window>
     </v-card-text>
@@ -74,7 +72,7 @@
   import { useFacilityStore } from '@/stores/facility.js';
   import { useAreaStore } from '@/stores/area.js';
   import { useAuthStore } from '@/stores/auth.js';
-  import { useToastStore } from '@/stores/toasts.js';
+  import { useToastStore } from '@/stores/toasts.ts';
   import { getErrorMessage } from '@/utils/getErrorMessage.js';
   import DetailsTab from '@/views/FacilityConfigure/Tabs/DetailsTab.vue'
   import BidTimesTabNew from '@/views/FacilityConfigure/Tabs/BidTimesTab.vue'
@@ -120,52 +118,52 @@
       });
     }
   }
+  // // Handle area updates from tabs
+  // async function createArea (data) {
+  //   try {
+  //     if (!data) {
+  //       return;
+  //     }
+  //
+  //     // Update the area store with the updated areas
+  //     await areaStore.create(data);
+  //
+  //     toast.showMessage({
+  //       title: 'Success',
+  //       message: 'Area created successfully.',
+  //       color: 'success',
+  //     });
+  //   } catch (e) {
+  //     toast.showMessage({
+  //       title: 'Error',
+  //       message: getErrorMessage(e),
+  //       color: 'error',
+  //     });
+  //   }
+  // }
   // Handle area updates from tabs
-  async function createArea (data) {
-    try {
-      if (!data) {
-        return;
-      }
-
-      // Update the area store with the updated areas
-      await areaStore.createArea(data);
-
-      toast.showMessage({
-        title: 'Success',
-        message: 'Area created successfully.',
-        color: 'success',
-      });
-    } catch (e) {
-      toast.showMessage({
-        title: 'Error',
-        message: getErrorMessage(e),
-        color: 'error',
-      });
-    }
-  }
-  // Handle area updates from tabs
-  async function updateArea (data) {
-    try {
-      if (!data) {
-        return;
-      }
-
-      // Update the area store with the updated areas
-      await areaStore.updateArea(data.id, data);
-
-      toast.showMessage({
-        title: 'Success',
-        message: 'Area changes saved successfully.',
-        color: 'success',
-      });
-    } catch (e) {
-      toast.showMessage({
-        title: 'Error',
-        message: getErrorMessage(e),
-        color: 'error',
-      });
-    }
-  }
+  // async function updateArea (data) {
+  //   try {
+  //     if (!data) {
+  //       return;
+  //     }
+  //
+  //     // Update the area store with the updated areas
+  //     await areaStore.updateArea(data.id, data);
+  //
+  //     toast.showMessage({
+  //       title: 'Success',
+  //       message: 'Area changes saved successfully.',
+  //       color: 'success',
+  //     });
+  //   } catch (e) {
+  //     toast.showMessage({
+  //       title: 'Error',
+  //       message: getErrorMessage(e),
+  //       color: 'error',
+  //     });
+  //   }
+  // }
   // Handle area updates from tabs
   async function deleteArea (data) {
     try {

@@ -5,28 +5,44 @@ class AreaRepository {
   constructor () {
     this.client = apiClient;
   }
-  fetchAreas () {
-    return this.client.get('/areas');
+
+  /** @param {import('@/types/context').AreaContextData} context */
+  get (context) {
+    const path = context?.id ? `/${context.id}` : ''
+    return this.client.get(`/areas/${path}`)
   }
 
-  fetchStats (areaId, refresh = false) { /** TODO: UPDATED ROUTE - NEED TO UPDATE BACKEND */
-    return this.client.post(`/areas/${areaId}/fetchStats`, { recalculate: refresh })
+  /** @param {import('@/types/context').AreaContextData} context */
+  create (context){
+    return this.client.post('/areas', context.data)
   }
 
-  createArea (payload){
-    return this.client.post('/areas', payload)
+  /** @param {import('@/types/context').AreaContextData} context */
+  update (context) {
+    const { id, data } = context;
+    return this.client.put(`/areas/${id}`, data)
   }
 
-  updateArea (areaId, payload) {
-    return this.client.put(`/areas/${areaId}`, payload)
+  /** @param {import('@/types/context').AreaContextData} context */
+  delete (context) {
+    return this.client.delete(`/areas/${context.id}`)
   }
 
-  deleteArea (areaId) {
-    return this.client.delete(`/areas/${areaId}`)
+  /** @param {import('@/types/context').AreaContextData} context */
+  order (context) {
+    console.log('[AreaRepository.order] - ', context)
+    return this.client.put(`/areas/order`, context.data)
   }
 
-  resetArea (areaId) {
-    return this.client.post(`/areas/${areaId}/reset`)
+  /** @param {import('@/types/context').AreaContextData} context */
+  fetchStats (context) { /** TODO: UPDATED ROUTE - NEED TO UPDATE BACKEND */
+    const { id, refresh } = context;
+    return this.client.post(`/areas/${id}/fetchStats`, { recalculate: refresh })
+  }
+
+  /** @param {import('@/types/context').AreaContextData} context */
+  resetArea (context) {
+    return this.client.post(`/areas/${context.id}/reset`)
   }
 }
 export default AreaRepository

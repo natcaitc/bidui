@@ -1,23 +1,24 @@
-/**
- * router/index.ts
- *
- * Automatic routes for `./src/pages/*.vue`
- */
+// router/index.js
+
 
 // Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomeLayout from '@/layouts/HomeLayout.vue';
 import Home from '@/views/Home.vue';
-import FacilityHome from '@/views/FacilityHome.vue';
 import { loadFacilities } from '@/router/loadFacilities.js';
 import { setupAuthGuard } from '@/router/authGuard.js';
+import { loadFacilityContext } from '@/router/loadFacilityContext.js';
+import { loadAreaContext } from '@/router/loadAreaContext.js';
 
-// import { setupLayouts } from 'virtual:generated-layouts'
-// import { routes } from 'vue-router/auto-routes'
-
+// Import routes
+import authRoutes from '@/router/auth.routes.js';
+import facilityRoutes from '@/router/facility.routes.js';
+import roundRoutes from '@/router/round.routes.js';
 
 // Create routes
 const routes = [
+  ...authRoutes,
+  ...facilityRoutes,
   {
     path: '/',
     component: HomeLayout,
@@ -36,51 +37,7 @@ const routes = [
         name: 'home',
         component: Home,
       },
-    ],
-  },
-  {
-    path: '/:facility',
-    component: () => import('@/layouts/AdminLayout.vue'),
-    // beforeEnter: async (to, from, next) => {
-    //   try {
-    //     await loadFacilityContext(to.params.facility);
-    //     next();
-    //   } catch (e) {
-    //     next({ name: 'home' });
-    //     console.log(e)
-    //   }
-    // try {
-    //   // Get the facility ID from the route parameter
-    //   const facilityId = to.params.facility;
-    //   const facilityStore = useFacilityStore();
-    //
-    //   // Check if we already have this facility loaded
-    //   if (!facilityStore.facility || facilityStore.facility.id !== facilityId) {
-    //     // Load the facility data
-    //     await facilityStore.loadFacility(facilityId);
-    //   }
-    //
-    //   // Continue to the route
-    //   next();
-    // } catch (error) {
-    //   console.error('Failed to load facility data:', error);
-    //
-    //   // Redirect to home page or error page if loading fails
-    //   next({ name: 'home' });
-    // }
-    // },
-    children: [
-      {
-        path: '',
-        name: 'facility.home',
-        components: { default: FacilityHome },
-      },
-      {
-        path: 'config',
-        name: 'facility.config',
-        components: { default: () => import('@/views/FacilityConfigure.vue') },
-        meta: { permission: 'facility:configure:view' },
-      },
+
     ],
   },
   { path: '/logos',
@@ -103,15 +60,31 @@ const routes = [
       },
     ],
   },
+
   {
-    path: '/denied',
-    component: HomeLayout,
+    path: '/:facility/:area',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    beforeEnter: async (to, from, next) => {
+      try {
+        await loadAreaContext(to.params.area)
+        next();
+      } catch (e) {
+        next({ name: 'home' });
+        console.log(e)
+      }
+    },
     children: [
       {
         path: '',
-        name: 'auth.denied',
-        component: () => import('@/views/PermissionDenied.vue'),
+        name: 'area.home',
+        component: () => import('@/views/AreaHome.vue'),
       },
+      {
+        path: 'rosters',
+        name: 'rosters.home',
+        component: () => import('@/views/roster/RosterView.vue'),
+      },
+      ...roundRoutes,
     ],
   },
 ];
@@ -121,7 +94,7 @@ const router = createRouter({
   routes,
 })
 
-// Inject authentication guard
+loadFacilityContext(router);
 setupAuthGuard(router)
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

@@ -5,7 +5,10 @@ class MemberRepository {
   constructor () {
     this.client = apiClient;
   }
-  get (id = null, areaSlug = null) {
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  get (context) {
+    const { id, areaSlug } = context;
     if (id) {
       return this.client.get(`/members/${id}`)
     } else if (areaSlug) {
@@ -14,26 +17,43 @@ class MemberRepository {
       return this.client.get('/members')
     }
   }
-  create (data) {
-    return this.client.post('/members', data)
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  create (context) {
+    return this.client.post('/members', context.data)
   }
-  update (id, data) {
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  update (context) {
+    const { id, data } = context;
     return this.client.put(`/members/${id}`, data)
   }
-  delete (id) {
-    return this.client.delete(`/members/${id}`)
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  delete (context) {
+    return this.client.delete(`/members/${context.id}`)
   }
-  getSchedule (id) {
-    return this.client.get(`/members/${id}/schedule`)
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  getSchedule (context) {
+    return this.client.get(`/members/${context.id}/schedule`)
   }
-  import (data) {
-    return this.client.post('/members/import', { ...data })
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  import (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`${areaSlug}/members/import`, { ...data })
   }
-  search (criteria) {
-    return this.client.post('/members/search', criteria)
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  search (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`${areaSlug}/members/search`, data)
   }
-  getLeave (id) {
-    return this.client.get(`/members/${id}`)
+
+  /** @param {import('@/types/context').MemberContextData} context */
+  getLeave (context) {
+    return this.client.get(`/members/${context.id}`)
   }
 }
 export default MemberRepository;

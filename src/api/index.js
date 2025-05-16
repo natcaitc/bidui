@@ -1,4 +1,10 @@
-// @/src/api/index.js
+// @/src/api/index.ts
+
+/**
+ * @typedef {Object} RosterTeamContext
+ * @property {number} area - The area ID
+ * @property {number} rosterId - The roster ID
+ */
 
 // Export all Repositories
 import AreaRepository from '@/api/repos/AreaRepository.js';

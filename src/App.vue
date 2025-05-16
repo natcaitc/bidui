@@ -1,5 +1,5 @@
 <template>
-  <BootAuth0 />
+  <!--  <BootAuth0 />-->
   <v-app>
     <router-view />
     <Snackbar />
@@ -8,5 +8,4 @@
 
 <script setup>
   import Snackbar from '@/components/Snackbar.vue';
-  import BootAuth0 from '@/components/BootAuth0.vue';
 </script>

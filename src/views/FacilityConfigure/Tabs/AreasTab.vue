@@ -7,7 +7,7 @@
           class="mr-2"
           color="success"
           :disabled="!canEditFacility"
-          @click="createAreaForm"
+          @click="openCreate(defaultAreaFields)"
         >
           <v-icon v-if="display.mdAndUp.value" icon="plus" start />
           <v-icon v-else icon="plus" />
@@ -19,7 +19,7 @@
       <v-data-table
         class="elevation-1"
         :headers="headers"
-        :items="_areas || []"
+        :items="areas || []"
       >
         <template #item="{ item, index }">
           <tr>
@@ -30,33 +30,60 @@
                 <v-btn
                   v-if="!canEditArea(item)"
                   color="primary"
+                  density="compact"
                   icon
                   size="small"
                   variant="text"
-                  @click="editAreaForm(item, index)"
+                  @click="openEdit(item)"
                 >
                   <v-icon size="small">fass fa-eye</v-icon>
                 </v-btn>
                 <v-btn
                   v-if="canEditArea(item)"
+                  class="me-1"
                   color="primary"
+                  density="compact"
                   icon
                   size="small"
                   variant="text"
-                  @click="editAreaForm(item, index)"
+                  @click="openEdit(item)"
                 >
                   <v-icon size="small">edit</v-icon>
                 </v-btn>
                 <v-btn
                   v-if="(areas || []).length > 1"
+                  class="me-2"
                   color="error"
+                  density="compact"
                   :disabled="!canEditFacility"
                   icon
                   size="small"
                   variant="text"
-                  @click="confirmDeleteArea(item)"
+                  @click="requestDelete(item)"
                 >
                   <v-icon size="small">trash</v-icon>
+                </v-btn>
+                <v-btn
+                  class="me-1"
+                  density="compact"
+                  :disabled="index === areas.length - 1"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click="orderAreas(index, 1)"
+                >
+                  <v-icon size="small">chevron-down</v-icon>
+                </v-btn>
+                <v-btn
+                  class="ma-0"
+                  density="compact"
+                  :disabled="index === 0"
+                  icon
+                  size="small"
+                  variant="text"
+                  @click="orderAreas(index, -1)"
+                >
+                  <v-icon size="small">chevron-up</v-icon>
                 </v-btn>
               </div>
             </td>
@@ -66,63 +93,60 @@
     </v-card-text>
   </v-card>
 
-  <!-- Delete Confirmation Dialog -->
-  <v-dialog v-model="showDeleteDialog" max-width="500">
-    <v-card>
-      <v-card-title>Delete Area</v-card-title>
-      <v-card-text>
-        <p>Are you sure you want to delete the area <strong>{{ _area.name }}</strong>?</p>
-        <p class="text-error font-weight-bold mt-4">This action cannot be undone!</p>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn text @click="resetForm">Cancel</v-btn>
-        <v-btn color="error" variant="elevated" @click="deleteAreaConfirmed">Delete</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <!-- Create/Edit Dialog -->
+  <FormDialog
+    v-model="showDialog"
+    :action-label="isEdit ? 'Update' : 'Create'"
+    :form-data="formData"
+    :loading="loading"
+    :title="isEdit ? 'Edit Area' : 'New Area'"
+    @submit="handleSave"
+  >
+    <template #default="{ data }">
+      <AreaForm
+        :area="data"
+        :can-edit-area="canEditArea(_area)"
+        :can-edit-facility="canEditFacility"
+        :is-edit="false"
+        @update:area="val => data = val"
+      />
+    </template>
+  </FormDialog>
 
-  <!-- Form Dialog -->
-  <v-dialog v-model="showFormDialog" max-width="800">
-    <v-card>
-      <v-card-title>Area Details</v-card-title>
-      <v-card-text>
-        <AreaForm v-model="_area" :can-edit-area="canEditArea(_area)" :can-edit-facility="canEditFacility" :is-edit="false" />
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn text @click="showFormDialog = false">Cancel</v-btn>
-        <v-btn
-          color="success"
-          :disabled="!canEditArea(_area)"
-          prepend-icon="floppy-disk"
-          variant="elevated"
-          @click="handleSave"
-        >Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <!-- Delete Dialog -->
+  <ConfirmDialog
+    v-model="showDeleteConfirm"
+    title="Confirm Deletion"
+    @confirm="handleConfirmDelete"
+  >
+    <div>
+      <p>
+        Are you sure you want to delete the
+        <strong class="text-danger">{{ itemToDelete?.name }}</strong> area?
+      </p>
+      <small class="text-red">This action cannot be undone.</small>
+    </div>
+  </ConfirmDialog>
 </template>
 
 <script setup>
-/* Imports */
+/** Imports */
   import { computed, ref, watch } from 'vue';
   import AreaForm from '@/views/FacilityConfigure/AreaForm.vue';
   import { useDisplay } from 'vuetify';
   import { useRoute } from 'vue-router';
+  import FormDialog from '@/components/FormDialog.vue';
+  import ConfirmDialog from '@/components/ConfirmDialog.vue';
+  import { useCrud } from '@/composables/useCrud.js';
+  import { AreaRepository } from '@/api/index.js';
+  import { useToastStore } from '@/stores/toasts.js';
+  import { logError } from '@/utils/logError.js';
+  import { useAreaStore } from '@/stores/area.js';
+  import { storeToRefs } from 'pinia';
 
-  /* Setup */
-  const route = useRoute();
-  const defaultAreaFields = ref({});
-  const displayObject = useDisplay();
-  const display = {
-    mdAndUp: computed(() => displayObject?.mdAndUp || false),
-  };
-  const props = defineProps({
-    areas: {
-      type: Array,
-      default: () => [],
-    },
+  /** Setup */
+  defineEmits(['save', 'delete-area']);
+  defineProps({
     canEditFacility: {
       type: Boolean,
       default: false,
@@ -131,20 +155,34 @@
       type: Function,
       default: () => false,
     },
-    createArea: {
-      type: Function,
-      default: null,
-    },
-    updateArea: {
-      type: Function,
-      default: null,
-    },
-    deleteArea: {
-      type: Function,
-      default: null,
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   });
-  const emit = defineEmits(['save', 'delete-area']);
+  const AREA = new AreaRepository();
+  const toastStore = useToastStore();
+  const route = useRoute();
+  const defaultAreaFields = ref({});
+  const displayObject = useDisplay();
+  const display = {
+    mdAndUp: computed(() => displayObject?.mdAndUp || false),
+  };
+  const areaStore = useAreaStore();
+  const { areas } = storeToRefs(areaStore);
+  const {
+    loading,
+    formData,
+    openCreate,
+    openEdit,
+    showDialog,
+    isEdit,
+    save,
+    requestDelete,
+    showDeleteConfirm,
+    confirmDelete,
+    itemToDelete,
+  } = useCrud(AREA)
 
   /** Data */
   const headers = [
@@ -152,73 +190,61 @@
     { title: 'Slug', key: 'slug' },
     { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
   ];
-  const showFormDialog = ref(false); // Display of the dialog with the form
-  const formAction = ref('add'); // Add or Edit an area - add | edit
   const _areas = ref([]);
   const _area = ref({}); // Working copy of area for the form
-  const _areaIdx = ref(-1);
-  const showDeleteDialog = ref(false);
 
-  /** Methods */
-  function handleSave () {
-    if (formAction.value === 'add') {
-      if (props.createArea) {
-        props.createArea(_area.value);
+  /** Actions */
+  const handleSave = async data => {
+    console.log('AreasTab.handleSave', data);
+    await save(r => {
+      if (isEdit.value) {
+        // Find and update the area in the store
+        areaStore.updateArea(r)
       } else {
-        emit('save', _area.value);
+        areaStore.insertArea(r)
       }
-    } else if (formAction.value === 'edit') {
-      if (props.updateArea) {
-        props.updateArea(_area.value);
-      } else {
-        emit('save', _area.value);
-      }
+    })
+  }
+  const handleConfirmDelete = () => {
+    confirmDelete(deletedArea => {
+      _areas.value = _areas.value.filter(a => a.id !== deletedArea.id)
+      toastStore.showMessage({ message: 'Roster deleted successfully', color: 'success' })
+    }, async e => {
+      toastStore.showMessage({ message: 'Unable to delete the roster.', color: 'danger' })
+      await logError(e, { tag: 'RosterView.deleteRoster' })
+    })
+  }
+  const orderAreas = async (index, direction) => {
+    const areas = _areas.value
+    const targetIndex = index + direction
+    console.log('AreasTab.moveArea', index, direction, areas, targetIndex);
+    // Prevent invalid movement
+    if (targetIndex < 0 || targetIndex >= areas.length) return
+
+    // Swap items
+    const temp = areas[index]
+    areas[index] = areas[targetIndex]
+    areas[targetIndex] = temp
+
+    // Emit updated order data for the two changed areas
+    const updated = [
+      { id: areas[index].id, order: index },
+      { id: areas[targetIndex].id, order: targetIndex },
+    ]
+
+    console.log('Area reordered:', updated)
+    // Persist the changes
+    try {
+      /** @param {import('@/types/context').AreaContextData} context */
+      await AREA.order({ data: updated })
+    } catch (e) {
+      await logError(e, { tag: 'area.moveArea', message: 'Failed to reorder areas.' })
     }
-    resetForm();
-  }
-  function createAreaForm () {
-    _area.value = { ...defaultAreaFields.value };
-    showFormDialog.value = true;
-    formAction.value = 'add';
-  }
-  function editAreaForm (area, index) {
-    // Make a local copy and ensure all fields have values
-    _area.value = {
-      ...defaultAreaFields.value,
-      ...JSON.parse(JSON.stringify(area)),
-    };
-
-    // Ensure numeric fields are properly formatted
-    _area.value.use_bid_aid = parseInt(_area.value.use_bid_aid || 0);
-    _area.value.subtract_holiday_leave = parseInt(_area.value.subtract_holiday_leave || 0);
-
-    _areaIdx.value = index;
-    showFormDialog.value = true;
-    formAction.value = 'edit';
-  }
-  function resetForm () { // Reset the form
-    _area.value = { ...defaultAreaFields.value };
-    showFormDialog.value = false;
-    showDeleteDialog.value = false;
-    formAction.value = 'add';
-  }
-  function confirmDeleteArea (area) {
-    _area.value = area;
-    showDeleteDialog.value = true;
-  }
-  function deleteAreaConfirmed () {
-    if (props.deleteArea) {
-      props.deleteArea(_area.value);
-    } else {
-      emit('delete-area', _area.value);
-    }
-
-    // Close dialog and clear state
-    resetForm();
   }
 
   /** Lifecycle */
   onMounted(() => {
+    console.log('AreasTab.onMounted');
     defaultAreaFields.value = {
       facility_id: route.params.facility,
       name: '',
@@ -229,10 +255,11 @@
       grace_hours: '4',
       accrual_slot_factor: '8',
     };
+    console.log('AreasTab.onMounted', defaultAreaFields.value);
   });
 
   /** Watchers */
-  watch(() => props.areas, newAreas => {
+  watch(() => areas, newAreas => {
     if (newAreas) {
       _areas.value = JSON.parse(JSON.stringify(newAreas))
     }

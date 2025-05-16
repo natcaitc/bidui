@@ -44,7 +44,7 @@
 <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useToastStore } from '@/stores/toasts';
+  import { useToastStore } from '@/stores/toasts.js';
   import { useFacilityStore } from '@/stores/facility.js';
 
   const facilityStore = useFacilityStore();
@@ -63,26 +63,6 @@
         message: `${facilityId.value} is not a valid facility.`,
         color: 'error',
       })
-    // FACILITY.get(facilityId.value)
-    //   .then(r => {
-    //     console.log(r)
-    //     if (r.data.id === facilityId.value)
-    //       router.push({ name: 'facility.home', params: { facility: facilityId.value } })
-    //     else
-    //       toast.showMessage({
-    //         title: 'Input Error',
-    //         message: `${facilityId.value} is not a valid facility.`,
-    //         color: 'error',
-    //       })
-    //   })
-    //   .catch(e => {
-    //     console.log(e)
-    //     toast.showMessage({
-    //       title: 'Server Error',
-    //       message: getErrorMessage(e),
-    //       color: 'error',
-    //     })
-    //   })
   }
 
 </script>

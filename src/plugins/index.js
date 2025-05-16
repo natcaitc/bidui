@@ -1,5 +1,5 @@
 /**
- * plugins/index.js
+ * plugins/index.ts
  *
  * Automatically included in `./src/main.js`
  */
@@ -8,13 +8,15 @@
 import vuetify from './vuetify'
 import pinia from '@/stores'
 import router from '@/router'
-import { registerAuth0 } from './auth0'
+import { auth0 } from './auth0'
 
+/**
+ * @param {import("vue").App<Element>} app
+ */
 export function registerPlugins (app) {
-  registerAuth0(app)
-
   app
     .use(vuetify)
-    .use(router)
+    .use(auth0)
     .use(pinia)
+    .use(router)
 }

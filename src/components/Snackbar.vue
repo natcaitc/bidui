@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-  import { useToastStore } from '@/stores/toasts';
+  import { useToastStore } from '@/stores/toasts.js';
 
   const store = useToastStore();
 </script>

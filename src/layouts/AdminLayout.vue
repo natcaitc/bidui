@@ -46,15 +46,19 @@
         />
 
         <v-list-item
+          v-if="areaStore.area"
           link
           prepend-icon="users"
           title="MANAGE ROSTERS"
+          :to="{name: 'rosters.home', params: {facility: route.params.facility, area: areaStore.area.slug}}"
         />
 
         <v-list-item
+          v-if="areaStore.area"
           link
           prepend-icon="books"
           title="MANAGE ROUNDS"
+          :to="{name: 'rounds.home', params: {facility: route.params.facility, area: areaStore.area.slug}}"
         />
 
         <v-list-item
@@ -75,7 +79,7 @@
     <v-app-bar
       color="#ECECF1"
       density="compact"
-      title="NATCA Document Management System"
+      title="NATCA BID"
     >
       <template #prepend>
         <!-- Only show hamburger on mobile -->
@@ -87,22 +91,8 @@
         </v-app-bar-nav-icon>
       </template>
       <template #append>
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn v-bind="props">
-              Jason
-              <v-icon class="ms-1">caret-down</v-icon>
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item>
-              <h3>Jason Doss</h3>
-              <small>Member Number: 40162</small>
-            </v-list-item>
-            <v-list-item prepend-icon="right-from-bracket" title="Logout" />
-          </v-list>
-        </v-menu>
+        <area-selector />
+        <login-logout />
       </template>
     </v-app-bar>
     <v-main>
@@ -119,10 +109,14 @@
   import { onMounted, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useDisplay } from 'vuetify'
+  import LoginLogout from '@/components/LoginLogout.vue';
+  import AreaSelector from '@/components/AreaSelector.vue';
+  import { useAreaStore } from '@/stores/area.js';
 
   /* Setup */
   const route = useRoute();
   const display = useDisplay();
+  const areaStore = useAreaStore();
 
   /* Data */
   const drawer = ref(true); // Single drawer state
