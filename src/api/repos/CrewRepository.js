@@ -5,17 +5,30 @@ class CrewRepository {
   constructor () {
     this.client = apiClient;
   }
-  get () {
-    return this.client.get('/crews')
+
+  /** @param {import('@/types/context').CrewContextData} context */
+  get (context) {
+    const { areaSlug, id, data } = context;
+    const path = `/${areaSlug}/crews` + (id ? `/${id}` : '')
+    return this.client.get(path, data)
   }
-  create (data) {
-    return this.client.post('/crews', data)
+
+  /** @param {import('@/types/context').CrewContextData} context */
+  create (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`/${areaSlug}/crews`, data)
   }
-  update (id, data) {
-    return this.client.put(`/crews/${id}`, data)
+
+  /** @param {import('@/types/context').CrewContextData} context */
+  update (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.put(`/${areaSlug}/crews/${id}`, data)
   }
-  delete (id) {
-    return this.client.delete(`/crews/${id}`)
+
+  /** @param {import('@/types/context').CrewContextData} context */
+  delete (context) {
+    const { areaSlug, id } = context;
+    return this.client.delete(`/${areaSlug}/crews/${id}`)
   }
 }
 export default CrewRepository;

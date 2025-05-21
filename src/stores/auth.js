@@ -154,7 +154,7 @@ export const useAuthStore = defineStore('auth', () => {
       console.log('auth.setUser: setting user:', payload)
       // Fetch the member data
       const MEMBER = new MemberRepository()
-      const r = await MEMBER.get(payload.member_id)
+      const r = await MEMBER.get({ id: payload.member_id })
       if (r.data)
         member.value = r.data
 

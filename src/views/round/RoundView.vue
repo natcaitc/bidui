@@ -6,11 +6,15 @@
           <span class="text-body-1 font-weight-bold">{{ round.name }} Bidders</span>
           <v-spacer />
 
-          <v-btn icon="eye" variant="text" />
-
-          <v-btn class="" icon="caret-down" variant="text" />
-
-          <v-btn class="" icon="xmark" variant="text" />
+          <v-btn
+            prepend-icon="clock"
+            size="small"
+            title="Bid Roster"
+            variant="text"
+            @click="openBidWindowDialog"
+          >
+            Configure Bid Windows
+          </v-btn>
         </v-system-bar>
       </v-col>
     </v-row>
@@ -39,17 +43,29 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- Bid Window Form -->
+  <BidWindowForm ref="bidWindowRef" :round="round" />
 </template>
 
 <script setup>
   /** Imports */
   import { useRoundStore } from '@/stores/round.js';
   import RoundBidders from '@/views/round/RoundBidders.vue';
+  import BidWindowForm from '@/views/round/BidWindowForm.vue';
+  import { ref } from 'vue';
 
   /** Setup */
   const roundStore = useRoundStore();
 
   /** State */
+  /** @type {import('@/views/round/BidWindowForm.vue')['__VLS_exposed'] & { openDialog: () => void }} */
+  const bidWindowRef = ref()
+
+  /** Methods */
+  function openBidWindowDialog () {
+    bidWindowRef.value?.openDialog()
+  }
 
   /** Computed */
   /** @type {import('vue').ComputedRef<import('@/types').Round>} */

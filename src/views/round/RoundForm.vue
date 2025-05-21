@@ -210,12 +210,13 @@
 
   /** Setup */
   /**
-   * @type {{
+   * @type {import('vue').DefineProps<{
    *   bidYear: number,
    *   area: Area,
-   *   round: object,
+   *   rosters: Roster[],
+   *   round: Round,
    *   isEdit?: boolean
-   * }}
+   * }>}
    */
   const props = defineProps({
     bidYear: {

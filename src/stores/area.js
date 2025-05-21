@@ -1,17 +1,25 @@
 /** @typedef {import('@/types/area').Area} Area */
 import { defineStore } from 'pinia';
 import { ref } from 'vue'
-import { AreaRepository } from '@/api/index.js';
+import { AreaRepository, CrewRepository } from '@/api/index.js';
 
 export const useAreaStore = defineStore('area', () => {
   /** Setup */
   const AREA = new AreaRepository()
+  const CREW = new CrewRepository()
 
-  // State
+  /** State */
   /** @type {import('vue').Ref<import('@/types').Area[]|[]>} */
   const areas = ref([])
   /** @type {import('vue').Ref<import('@/types').Area|null>} */
   const area = ref(null)
+  /** @type {import('vue').Ref<import('@/types').Crew[]|[]>} */
+  const _crews = ref([])
+
+  /** Getters */
+  const crews = computed(() => {
+    return _crews.value;
+  })
 
   /** Actions */
   const fetchAreas = async () => {
@@ -19,6 +27,17 @@ export const useAreaStore = defineStore('area', () => {
       const r = await AREA.get()
       areas.value = r.data
       return areas.value
+    } catch (e) {
+      console.error('Failed to retrieve areas:', e)
+      throw e
+    }
+  }
+  const fetchCrews = async () => {
+    try {
+      console.log('fetchCrews', area.value)
+      const r = await CREW.get({ areaSlug: area.value.slug })
+      _crews.value = r.data
+      return _crews.value
     } catch (e) {
       console.error('Failed to retrieve areas:', e)
       throw e
@@ -98,8 +117,12 @@ export const useAreaStore = defineStore('area', () => {
     areas,
     area,
 
+    // Getters
+    crews,
+
     // Actions
     fetchAreas,
+    fetchCrews,
 
     // Methods
     setArea,

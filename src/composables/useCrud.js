@@ -41,10 +41,10 @@ export function useCrud (repo, context = {}) {
         id: itemToDelete.value.id,
         ...addContext,
       }
-      await repo.delete(contextData)
+      const r = await repo.delete(contextData)
 
       // Handle success
-      onSuccess(itemToDelete.value)
+      onSuccess(r.data)
       showDeleteConfirm.value = false
       itemToDelete.value = null
     } catch (e) {

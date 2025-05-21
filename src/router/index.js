@@ -84,6 +84,11 @@ const routes = [
         name: 'rosters.home',
         component: () => import('@/views/roster/RosterView.vue'),
       },
+      {
+        path: 'lines',
+        name: 'lines.home',
+        component: () => import('@/views/line/LineView.vue'),
+      },
       ...roundRoutes,
     ],
   },

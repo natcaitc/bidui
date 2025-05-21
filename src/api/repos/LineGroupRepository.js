@@ -5,8 +5,12 @@ class LineGroupRepository {
   constructor () {
     this.client = apiClient;
   }
-  get (bidYear, withInactive = false) {
-    return this.client.post('/linegroups', { bid_year: bidYear, withInactive })
+
+  /** @param {import('@/types/context').LineGroupContextData} context */
+  get (context) {
+    const { areaSlug, id, bidYear } = context;
+    const path = `${areaSlug}/linegroups` + (id ? `/${id}` : '')
+    return this.client.get(path, { bid_year: bidYear })
   }
   create (data) {
     return this.client.post('/linegroups', data)

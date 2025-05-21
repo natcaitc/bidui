@@ -84,18 +84,6 @@
                   </v-btn>
 
                   <v-btn
-                    density="compact"
-                    :disabled="!!item.bidders_created"
-                    icon
-                    size="small"
-                    title="Bid Roster"
-                    variant="text"
-                    @click="openBidWindowDialog"
-                  >
-                    <v-icon size="small">clock</v-icon>
-                  </v-btn>
-
-                  <v-btn
                     color="error"
                     density="compact"
                     :disabled="!isRoundDeleteable(item)"
@@ -114,9 +102,6 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <!-- Bid Window Form -->
-    <BidWindowForm ref="bidWindowRef" :round="formData" />
 
     <!-- Create/Edit Dialog -->
     <FormDialog
@@ -265,8 +250,6 @@
   const resetDialog = ref(false)
   const resetRound = ref(null)
   const roundToDelete = ref(null)
-  /** @type {import('@/views/round/BidWindowForm.vue')['__VLS_exposed'] & { openDialog: () => void }} */
-  const bidWindowRef = ref()
   const headers = [
     { title: 'Name', key: 'name', sortable: true },
     { title: 'Status', key: 'status', sortable: true },
@@ -288,9 +271,7 @@
     resetRound.value = round
     resetDialog.value = true
   }
-  function openBidWindowDialog () {
-    bidWindowRef.value?.openDialog()
-  }
+
   /**
    * Handle row click to navigate to round detail page.
    * @param event

@@ -30,6 +30,9 @@
             </tr>
           </template>
 
+          <!-- Suppress default group control column -->
+          <template #group="{ }" />
+
           <template #item.init="{ item }">
             <span style="text-transform: uppercase">{{ item.init }}</span>
           </template>
@@ -190,14 +193,8 @@
   text-transform: uppercase;
 }
 
-:deep(.v-data-table__td.v-data-table-column--align-start:first-child) {
-    display: none !important;
-}
-
 :deep(.name-col) {
     width: 300px;
     text-wrap: nowrap;
 }
-
-
 </style>

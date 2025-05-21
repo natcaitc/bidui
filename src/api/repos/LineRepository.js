@@ -5,24 +5,32 @@ class LineRepository {
   constructor () {
     this.client = apiClient;
   }
-  get (groupId = null) {
-    const path = '/lines' + (groupId ? `/${groupId}` : '');
+
+  /** @param {import('@/types/context').LineContextData} context */
+  get (context) {
+    const { areaSlug, id } = context;
+    const path = `${areaSlug}/lines` + (id ? `/${id}` : '');
     return this.client.get(path)
   }
-  create (data) {
-    return this.client.post('/lines', data)
+  create (context) {
+    const { areaSlug, data } = context;
+    return this.client.post(`${areaSlug}/lines`, data)
   }
-  update (id, data) {
-    return this.client.put(`/lines/${id}`, data)
+  update (context) {
+    const { areaSlug, id, data } = context;
+    return this.client.put(`${areaSlug}/lines/${id}`, data)
   }
-  delete (id) {
-    return this.client.delete(`/lines/${id}`)
+  delete (context) {
+    const { areaSlug, id } = context;
+    return this.client.delete(`${areaSlug}/lines/${id}`)
   }
-  order (data) {
-    return this.client.put('/lines/order', { changes: data })
+  order (context) {
+    const { areaSlug, data } = context;
+    return this.client.put(`${areaSlug}/lines/order`, { changes: data })
   }
-  duplicate (id, newLineNumber) {
-    return this.client.post(`/lines/${id}/duplicate`, { newLineNumber })
+  duplicate (context) {
+    const { areaSlug, id } = context;
+    return this.client.post(`${areaSlug}/lines/${id}/duplicate`)
   }
 }
 export default LineRepository;

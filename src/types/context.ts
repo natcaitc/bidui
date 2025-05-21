@@ -42,7 +42,36 @@ export interface RoundContextData {
   bidYear?: number
 }
 
+export interface LineGroupContextData {
+  // Optional ID for get/update/delete operations
+  id?: number
+  // Data for create/update operations
+  data: Record<string, unknown>
+  // Slug of area the linegroup(s) belong to
+  areaSlug: string
+  // Retrieve linegroups for the specified year :: Defaults to current year
+  bidYear?: number
+}
+
+export interface LineContextData {
+  // Optional ID for get/update/delete operations
+  id?: number
+  // Data for create/update operations
+  data: Record<string, unknown>
+  // Slug of area the linegroup(s) belong to
+  areaSlug: string
+}
+
 export interface MemberContextData {
+  // Optional ID for get/update/delete operations
+  id?: number
+  // Data for create/update operations
+  data: Record<string, unknown>
+  // Slug of area the round(s) belong to
+  areaSlug: string
+}
+
+export interface CrewContextData {
   // Optional ID for get/update/delete operations
   id?: number
   // Data for create/update operations
